@@ -7,14 +7,17 @@ const Terminals = ({ systemData }) => {
   const [selectedSystem, setSelectedSystem] = useState('')
   const [orbits, setOrbits] = useState()
   const [orbitList, setOrbitList] = useState()
-  const [selectedOrbit, setSelectedOrbit] = useState()
+  const [selectedOrbit, setSelectedOrbit] = useState('')
   const [isMoon, setIsMoon] = useState(false)
   const [isOrbit, setIsOrbit] = useState(false) 
   const [moons, setMoons] = useState()
   const [station, setStation] = useState()
   const [stations, setStations] = useState()
-  const [selectedStation, setSelectedStation] = useState()
+  const [selectedStation, setSelectedStation] = useState('')
   const [defaultSystem, setDefaultSystem] = useState()
+  const [selectedMoon, setSelectedMoon] = useState('')
+  const [readyToSubmit, setReadyToSubmit] = useState(false)
+  const [dataToAdd, setDataToAdd] = useState({})
 
   const systemOptions = useMemo(() => {
     return systemData.map((sys) => (
@@ -89,6 +92,48 @@ const Terminals = ({ systemData }) => {
     findStation ? setStations(<option>{findStation}</option>) : console.log('no station')
   }
 
+  const selectMoon = (e) => {
+    const selectedValue = e.target.value
+    setSelectedMoon(selectedValue)
+
+    let stations=[]
+
+    const findStations = terminals.data.filter((stat) => stat.moon_name === selectedValue)
+
+    findStations.forEach((stat) => {
+      stations.push(<option>{stat.name}</option>)
+    })
+
+    setStations(stations)
+  }
+
+  const selectStation = (e) => {
+    const selectedValue = e.target.value
+    setSelectedStation(selectedValue)
+  }
+
+  const addLine = (e) => {
+    const stationData = {
+      System: selectedSystem,
+      Orbit: selectedOrbit,
+      Moon: selectedMoon,
+      Station: selectedStation
+    }
+
+    setDataToAdd(stationData)
+
+    setSelectedMoon('')
+    setSelectedOrbit('')
+    setSelectedSystem('')
+    setSelectedStation('')
+    setOrbitList('')
+    setMoons('')
+    setStations('')
+    setIsMoon(false)
+
+    console.log(stationData)
+  }
+
   useEffect(() => {
     orbits ? listOrbits(orbits) : console.log('no orbits')
   }, [orbits])
@@ -96,6 +141,10 @@ const Terminals = ({ systemData }) => {
   useEffect(() => {
     selectedOrbit ? orbitOrMoon(selectedOrbit) : console.log('no selection')
   }, [selectedOrbit])
+
+  useEffect(() => {
+    selectedStation ? setReadyToSubmit(true) : setReadyToSubmit(false)
+  }, [selectedStation])
 
 useEffect(() => {
     setTimeout(() => {
@@ -125,7 +174,7 @@ useEffect(() => {
     }
 
     { isMoon && 
-        <select value={selectedOrbit} onChange={listTerminals}>
+        <select value={selectedMoon} onChange={selectMoon}>
             <option value='' disabled>
                 Select a moon
             </option>
@@ -134,12 +183,18 @@ useEffect(() => {
     }
 
 { stations && 
-        <select value={selectedStation} onChange={{}}>
+        <select value={selectedStation} onChange={selectStation}>
             <option value='' disabled>
                 Select a station
             </option>
         {stations}
         </select>
+    }
+
+{ readyToSubmit && 
+        <a onClick={(e) => addLine(e)}>
+          +
+        </a>
     }
 
     </div>
