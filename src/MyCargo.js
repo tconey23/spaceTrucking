@@ -12,7 +12,7 @@ const MyCargo = ({commData, systemData, systems}) => {
     const [selectedOrbit, setSelectedOrbit] = useState('')
     const [isMoon, setIsMoon] = useState(false)
     const [isOrbit, setIsOrbit] = useState(false) 
-    const [moons, setMoons] = useState()
+    const [moons, setMoons] = useState() 
     const [station, setStation] = useState()
     const [stations, setStations] = useState()
     const [selectedStation, setSelectedStation] = useState('')
@@ -159,13 +159,14 @@ const MyCargo = ({commData, systemData, systems}) => {
           setDefaultSystem('Stanton')
           setSelectedSystem('Stanton')
           systemFilter('Stanton')
-      }, 1000);
+      }, 10);
   }, [])
   
     return (
       <div>
-        <form>
+        <form className='location-form'>
 
+        <label>Select location</label>
         <select value={selectedSystem} onChange={systemFilter}>
           <option value={defaultSystem}>
             {defaultSystem}
@@ -201,8 +202,8 @@ const MyCargo = ({commData, systemData, systems}) => {
       }
   
   { readyToSubmit && 
-          <a onClick={(e) => addLine(e)}>
-            +
+          <a className='tooltip' onClick={(e) => addLine(e)}>
+            +<span className="tooltiptext">Add location</span>
           </a>
       }
       </form>

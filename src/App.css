@@ -60,10 +60,29 @@ header{
   display: flex;
   flex-direction: column;
   font-size: 15px;
+  align-items: flex-start;
+}
+
+.commodity-table{
+  width: 98%;
+  border: 1px solid white;
+  margin: 5px;
+  tr{
+    text-align: left;
+  }
+  th, td{
+    width: 30px;
+  }
 }
 
 .commodity-form{
-
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  select, p, label, input{
+    margin-left:10px;
+  }
 }
 
 .slider-container{
@@ -77,6 +96,74 @@ header{
 .slick-slider{
   max-width: 85%;
   font-size: 10px;
+}
+
+.location-form{
+  margin:10px;
+  label, select{
+    margin: 10px;
+  }
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black; 
+  &:hover{
+    cursor: pointer;
+  }
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+  position: absolute;
+  z-index: 1;
+  font-size: 15px;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+
+.station-name{
+  font-size: 20px;
+}
+
+.comm-edit{
+
+  &:hover{
+    cursor: pointer;
+    filter: invert(0.5);
+  }
+}
+
+select, input{
+  border-radius: 20px;
+  /* box-shadow: 2px 2px 5px #0000008c; */
+  padding: 3px;
+  background: #ffffff00;
+  border: none;
+  color: white;
+  font-size: 20px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  transition: all 0.5s ease-in-out
+}
+
+select:hover, input:hover{
+  border: 1px solid white;
+  background: white;
+  color: black;
+  -webkit-appearance: auto;
+  -moz-appearance: auto;
+  appearance: auto;
 }
 
 main {

@@ -6,20 +6,25 @@ import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
-const Commodities = () => {
-    const [sliderData, setSliderData] = useState() 
-
-    const settings = {
-        dots: false,
-        infinite: true,
-        speed: 500,
-        slidesToShow: 3,
-        slidesToScroll: 1,
-    };
+const Commodities = ({commodity, scu}) => {
 
   return (
-    <div className='commodity-list'>
-    </div>
+    <table className='commodity-table'>
+      <tr>
+        <th>Commodity</th>
+        <th>SCU</th>
+        <th>EDIT</th>
+      </tr>
+      <tr>
+        <td>{commodity}</td>
+        <td>{scu}</td>
+        <tr>
+          <td className='comm-edit'>Modify</td>
+          |
+          <td className='comm-edit'>Delete</td>
+        </tr>       
+      </tr>
+    </table>
   )
 }
 

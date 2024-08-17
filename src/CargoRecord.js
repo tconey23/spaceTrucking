@@ -1,12 +1,13 @@
 import React from 'react'
 import Commodities from './Commodities'
 import { useState } from 'react'
-
+ 
 const CargoRecord = ({stationData, commData}) => {
 const [isNewLine, setIsNewLine] = useState(false)
 const [selectedComm, setSelectedComm] = useState('')
 const [commodityList, setCommodityList] = useState()
-const [rangeValue, setRangeValue] = useState(50)
+const [rangeValue, setRangeValue] = useState(0)
+const [commLines, setCommLines] = useState([])
 
 const handleRangeChange = (event) => {
     setRangeValue(event.target.value);
@@ -32,14 +33,30 @@ const handleRangeChange = (event) => {
 
     const selectComm = (e) => {
         setSelectedComm(e.target.value)
+      }
+      
+      const clearData = () => {
+
+      }
+
+    const addCommLine = (e) => {
+      let commArray = []
+      const commElement = (<Commodities key={Date.now()} commodity={selectedComm} scu={rangeValue}/>)
+      
+      setCommLines(prev => [...prev, commElement])
+      setSelectedComm('')
+      setRangeValue(0)
     }
+
 
   return (
     <div className='cargo-record'>
         <sup>08/14/24</sup>
-        <p>{stationData.Station}</p>
+          
+          <p className='station-name'>{stationData.Station}</p>
         <form className='commodity-form'>
-            {!isNewLine && <p onClick={(e) => addCommodity(e)}>+</p>}
+        <label htmlFor="rangeInput"> Commodity </label>
+            {!isNewLine && <p className='tooltip' onClick={(e) => addCommodity(e)}>+<span className="tooltiptext">Add commodity</span></p>}
             
             {isNewLine && commodityList &&
           <select value={selectedComm} onChange={selectComm}>
@@ -52,19 +69,23 @@ const handleRangeChange = (event) => {
 
         {selectedComm && 
         <>
-          <label htmlFor="rangeInput">Choose a value:</label>
+          <label htmlFor="rangeInput"> SCU </label>
             <input
-            type="range"
+            type="number"
             id="rangeInput"
             min="0"
-            max="100"
+            max="1000"
             value={rangeValue}
             onChange={handleRangeChange}
             />
-            <p>Selected Value: {rangeValue}</p>
           </>
         }
+
+        {selectedComm && 
+            <p className='tooltip' onClick={(e) => addCommLine(e)}>+<span className="tooltiptext">Add item</span></p>
+        }
         </form>
+        {commLines}
     </div>
   )
 }
