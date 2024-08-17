@@ -55,7 +55,7 @@ useEffect(() => {
           </div>
           <h1 className='site-name'>Space Trucking</h1>
           <div className='header-spacer'>
-            EXTERNAL LINKS
+            EXTERNAL LINKS - WIP
           </div>
         </header>
 

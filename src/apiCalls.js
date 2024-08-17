@@ -1,7 +1,7 @@
 
 
 const allCommPrices = '	https://uexcorp.space/api/2.0/commodities_prices_all'
-
+const randomImage = 'https://api.star-citizen.wiki/api/v2/comm-link-images/random'
 
 const getData = (url) => {    
     const options = {
