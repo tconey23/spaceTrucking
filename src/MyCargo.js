@@ -1,217 +1,67 @@
-import React, { useMemo, useState, useEffect } from 'react'
-import terminals from './mockTerminals.json'
-import systems from './mockStarSystems.json'
+import React from 'react'
 import { getData } from './apiCalls'
-import CargoRecord from './CargoRecord'
+import { useState, useEffect } from 'react'
+import Systems from './Systems'
 
+const MyCargo = () => {
 
-const MyCargo = ({commData, systemData, systems}) => {
-    const [selectedSystem, setSelectedSystem] = useState('')
-    const [orbits, setOrbits] = useState()
-    const [orbitList, setOrbitList] = useState()
-    const [selectedOrbit, setSelectedOrbit] = useState('')
-    const [isMoon, setIsMoon] = useState(false)
-    const [isOrbit, setIsOrbit] = useState(false) 
-    const [moons, setMoons] = useState() 
-    const [station, setStation] = useState()
-    const [stations, setStations] = useState()
-    const [selectedStation, setSelectedStation] = useState('')
-    const [defaultSystem, setDefaultSystem] = useState()
-    const [selectedMoon, setSelectedMoon] = useState('')
-    const [readyToSubmit, setReadyToSubmit] = useState(false)
-    const [dataToAdd, setDataToAdd] = useState({})
-    const [cargoRecords, setCargoRecords] = useState([])
-  
-    const systemOptions = useMemo(() => {
-      return systemData.map((sys) => (
-        <option key={sys} value={sys}>
-          {sys}
-        </option>
-      ))
-    }, [systemData])
-  
-    const systemFilter = (e) => {
-      let selectedValue
-      !e==='Stanton' ? selectedValue = e.target.value : selectedValue = 'Stanton'
-      setSelectedSystem(selectedValue)
-  
-     const sysTerms = terminals.data.filter((term) => 
-          term.star_system_name === selectedValue
-      )
-  
-      const sysId = systems.data.find((sys) => sys.name === selectedValue).id
-  
-      getOrbits(sysId).then(orbits => {
-          setOrbits(orbits.data)
-      })
-    }
-  
-    const getOrbits = async (data) => {
-      return await getData(`https://uexcorp.space/api/2.0/orbits?id_star_system=${data}`)
-    }
-  
-    const listOrbits = (data) => {
-      let orbArray = []
-  
-      data.forEach((orb) => {
-          orbArray.push(<option>{orb.name}</option>)
-      })
-      setOrbitList(orbArray)
-    }
-  
-    const listTerminals = (e) => {
-      const selectedValue = e.target.value
-      setSelectedOrbit(selectedValue)
-    }
-  
-    const orbitOrMoon = (data) => {
-      data.includes(' ') ? getOrbit(data) : getMoon(data)
-    }
-  
-    const getMoon = (data) => {
-      setIsMoon(true)
-      setIsOrbit(false)
-  
-      let moons = []
-      let cleanedMoons = []
-  
-      const findMoon = terminals.data.filter((term) => term.planet_name === data)
-      findMoon.forEach((moon) => {
-          moon.moon_name != null ? moons.push(moon.moon_name) : console.log('')
-      })
-  
-      new Set(moons).forEach((moon) => {
-        cleanedMoons.push(<option>{moon}</option>)
-      })
-  
-      setMoons(cleanedMoons)
-  
-    }
-  
-    const getOrbit = (data) => {
-      setIsMoon(false)
-      setIsOrbit(true)
-      const findStation = terminals.data.find((term) => term.orbit_name === data).space_station_name
-      findStation ? setStations(<option>{findStation}</option>) : console.log('no station')
-    }
-  
-    const selectMoon = (e) => {
-      const selectedValue = e.target.value
-      setSelectedMoon(selectedValue)
-  
-      let stations=[]
-  
-      const findStations = terminals.data.filter((stat) => stat.moon_name === selectedValue)
-  
-      findStations.forEach((stat) => {
-        stations.push(<option>{stat.name}</option>)
-      })
-  
-      setStations(stations)
-    }
-  
-    const selectStation = (e) => {
-      const selectedValue = e.target.value
-      setSelectedStation(selectedValue)
-    }
-  
-    const addLine = (e) => {
-      const stationData = {
-        System: selectedSystem,
-        Orbit: selectedOrbit,
-        Moon: selectedMoon,
-        Station: selectedStation
-      }
-  
-      setDataToAdd(stationData)
-  
-      setSelectedMoon('')
-      setSelectedOrbit('')
-      setSelectedSystem('')
-      setSelectedStation('')
-      setOrbitList('')
-      setMoons('')
-      setStations('')
-      setIsMoon(false)
+  const systems = 'https://uexcorp.space/api/2.0/star_systems'
 
-      const stationElement = (
-        <CargoRecord commData={commData} stationData={stationData}/>
-      )
+  const [systemList, setSystemList] = useState()
+  const [storageData, SetStorageData] = useState()
+  const [selectedSystem, setSelectedSystem] = useState('defaultOption')
+  const [systemOpt, setSystemOpt] = useState()
+  const [selectedOption, setSelectedOption] = useState("defaultOption");
 
-      setCargoRecords(prev => [...prev, stationElement])
+  const handleChange = (event) => {
+    setSelectedSystem({
+      name: event.target.value, 
+      id: event.target.key
+    })
+  }
 
-    }
-  
-    useEffect(() => {
-      let exit
-      orbits ? listOrbits(orbits) : exit = null
-    }, [orbits])
-  
-    useEffect(() => {
-      let exit
-      selectedOrbit ? orbitOrMoon(selectedOrbit) : exit = null
-    }, [selectedOrbit])
-  
-    useEffect(() => {
-      selectedStation ? setReadyToSubmit(true) : setReadyToSubmit(false)
-    }, [selectedStation])
-  
-  useEffect(() => {
-      setTimeout(() => {
-          setDefaultSystem('Stanton')
-          setSelectedSystem('Stanton')
-          systemFilter('Stanton')
-      }, 10);
-  }, [])
-  
-    return (
-      <div>
-        <form className='location-form'>
+  const importData = () => {
 
-        <label>Select location</label>
-        <select value={selectedSystem} onChange={systemFilter}>
-          <option value={defaultSystem}>
-            {defaultSystem}
-          </option>
-          {systemOptions}
-        </select>
-  
-      { orbitList && 
-          <select value={selectedOrbit} onChange={listTerminals}>
-              <option value='' disabled>
-                  Select an orbit
-              </option>
-          {orbitList}
-          </select>
-      }
-  
-      { isMoon && 
-          <select value={selectedMoon} onChange={selectMoon}>
-              <option value='' disabled>
-                  Select a moon
-              </option>
-          {moons}
-          </select>
-      }
-  
-  { stations && 
-          <select value={selectedStation} onChange={selectStation}>
-              <option value='' disabled>
-                  Select a station
-              </option>
-          {stations}
-          </select>
-      }
-  
-  { readyToSubmit && 
-          <a className='tooltip' onClick={(e) => addLine(e)}>
-            +<span className="tooltiptext">Add location</span>
-          </a>
-      }
-      </form>
-      {cargoRecords}
-      </div>
+    getData(systems).then(
+       data => {
+           setSystemList(data.data)
+       }
     )
+   
+   }
+
+   useEffect(() => {
+      importData()
+   }, [])
+
+   useEffect(() => {
+    let exit
+
+    const systemOptions = (data) => {
+      let array = []
+      data.forEach((sys) => {
+        array.push(<option key={sys.code} value={sys.name}>{sys.name}</option>)
+      })
+      return array
+    }
+    systemList ? setSystemOpt(systemOptions(systemList)) : exit = null
+
+   }, [systemList])
+
+
+  return (
+    <>
+    <p>Add System +</p>
+    <div className='new-system'>
+      <select value={selectedSystem} onChange={handleChange}>
+      <option value="defaultOption" disabled>Select a system</option>
+        {systemOpt}
+      </select>
+    </div>
+      <Systems system={{name: 'Stanton', id: 68}}/>
+      {!selectedSystem === 'defaultOption' && <Systems system={selectedSystem}/>}
+    </>
+  )
 }
 
 export default MyCargo

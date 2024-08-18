@@ -7,12 +7,14 @@ import systems from './mockStarSystems.json'
 import terminals from './mockTerminals.json'
 import MyCargo from './MyCargo';
 import { useEffect, useState } from 'react';
+import Scripts from './Scripts';
 
 function App() {
 
   const [commodityData, setCommodityData] = useState()
   const [systemData, setSystemData] = useState()
   const [terminalData, setTerminalData] = useState()
+  const [storageTemplate, setStorageTemplate] = useState()
 
 useEffect(() => {
   commData ? setCommodityData(commData.data) : setCommodityData(null)
@@ -44,6 +46,20 @@ useEffect(() => {
 
   systems ? sysNames(systems.data) : setSystemData(null)
 }, [systems])
+
+useEffect(() => {
+
+  const template = {
+    CargoRecords : {}
+  }
+
+  setStorageTemplate(template)
+
+  const storedData = localStorage.getItem('CargoRecords');
+
+  storedData ? console.log(storedData) : localStorage.setItem('CargoRecords', JSON.stringify(storageTemplate))
+
+}, [])
 
 
   return (

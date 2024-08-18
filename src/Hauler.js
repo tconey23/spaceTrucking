@@ -4,6 +4,7 @@ import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import PriceObject from './PriceObject';
+import Scripts from './Scripts';
 
 const Hauler = () => {
   const [imageUrl, setImageUrl] = useState(null);
@@ -84,6 +85,7 @@ const Hauler = () => {
       <div className='splash-img-container'>
         {imageUrl && <img className="splash-image" src={imageUrl} alt="Random Star Citizen Image" />}
       </div>
+      <Scripts/>
     </div>
   );
 };

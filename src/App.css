@@ -31,6 +31,16 @@ body{
   color: white;
 }
 
+.new-system{
+  display: none;
+}
+
+.system-wrapper{
+  border: 1px solid white;
+  width: 95vw;
+  
+}
+
 a{
   margin-left: 10px;
 }
