@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap');
+@import "~@flaticon/flaticon-uicons/css/all/all";
 
 body{
   font-family: "Orbitron", sans-serif
@@ -57,8 +58,14 @@ header{
   font-family: "Orbitron", sans-serif
 }
 
-.main-page{
 
+.fi{
+  color: white;
+  transition: all 0.5s ease-in-out;
+  &:hover{
+    color: orange;
+    cursor: pointer;
+  }
 }
 
 .slider-container{
@@ -123,8 +130,14 @@ header{
   tr{
     text-align: left;
   }
-  th, td{
-    width: 30px;
+  .comm-row{
+    width: 50%;
+  }
+  .scu-row{
+    width: 25%;
+  }
+  .comm-edit{
+    width: 25%;
   }
 }
 
@@ -188,18 +201,10 @@ header{
   font-size: 20px;
 }
 
-.comm-edit{
-
-  &:hover{
-    cursor: pointer;
-    filter: invert(0.5);
-  }
-}
-
 select, input{
   border-radius: 20px;
   /* box-shadow: 2px 2px 5px #0000008c; */
-  padding: 3px;
+  padding: 6px;
   background: #ffffff00;
   border: none;
   color: white;
@@ -217,6 +222,15 @@ select:hover, input:hover{
   -webkit-appearance: auto;
   -moz-appearance: auto;
   appearance: auto;
+  padding: 3px;
+}
+
+span{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: space-evenly;
 }
 
 main {
@@ -259,4 +273,9 @@ main {
   to {
     transform: rotate(360deg);
   }
+}
+
+h3, h4, h5 {
+  margin-top: -1px;
+  height: 10px;
 }

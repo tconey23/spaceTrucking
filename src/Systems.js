@@ -1,90 +1,91 @@
-import React from 'react'
-import { getData } from './apiCalls'
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react';
+import { getData } from './apiCalls';
+import Terminals from './Terminals';
 
-const Systems = ({system}) => {
+const Systems = ({ system }) => {
 
-    console.log(system)
+    const [selectedOption, setSelectedOption] = useState('defaultOption');
+    const [selectedType, setSelectedType] = useState([]);
+    const [optionsList, setOptionsList] = useState([]);
+    const [typeSelection, setTypeSelection] = useState('defaultOption');
+    const [isSubmit, setIsSubmit] = useState(false)
 
-const orbits = 'https://uexcorp.space/api/2.0/orbits'
-const moons = 'https://uexcorp.space/api/2.0/moons'
-const planets = 'https://uexcorp.space/api/2.0/planets'
-
-    const [selectedOption, setSelectedOption] = useState('defaultOption')
-    const [selectedType, setSelectedType] = useState()
-    const [optionsList, setOptionsList] = useState()
-    const [typeSelection, setTypeSelection] = useState('defaultOption')
-
-    const importData = (data) => {
-
-        getData(data).then(
-           data => {
-               setSelectedType(data.data)
-           }
-        )
-       
-       }
-    
-       useEffect(() => {
-        let exit
-        const listOptions = () => {
-            let array = []
-            selectedType.forEach((type) => {
-                array.push(<option key={type.id} id={type.id} value={type.name}>{type.name}</option>)
+    const importData = (url) => {
+        getData(url)
+            .then(response => {
+                if (response && response.data) {
+                    setSelectedType(response.data);
+                } else {
+                    setSelectedType([]);
+                }
             })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+                setSelectedType([]);
+            });
+    };
 
-            return array
+    useEffect(() => {
+        if (selectedType.length > 0) {
+            const listOptions = selectedType.map((type) => (
+                <option key={type.id} value={type.name} data-id={type.id}>{type.name}</option>
+            ));
+            setOptionsList(listOptions);
+        } else {
+            setOptionsList([]);
         }
-        selectedType ? setOptionsList(listOptions) : exit = null
+    }, [selectedType]);
 
-
-       }, [selectedType])
-
-       useEffect(() => {
-        let exit
-            typeSelection ? console.log(typeSelection) : exit = null
-       }, [typeSelection])
-
-       useEffect(() => {
-        switch (selectedOption) {
-            case 'moons': importData(`https://uexcorp.space/api/2.0/moons?id_star_system=${system.id}`)
-                break;
-            case 'orbits': importData(`https://uexcorp.space/api/2.0/orbits?id_star_system=${system.id}`)
-                break;
-            case 'planets': importData(`https://uexcorp.space/api/2.0/planets?id_star_system=${system.id}`)
-                break;
-            default:
-                break;
+    useEffect(() => {
+        if (typeSelection !== 'defaultOption') {
+            console.log(typeSelection)
         }
-       }, [selectedOption])
+    }, [typeSelection]);
 
-       const changeOption = (e) => {
-            setSelectedOption(e.target.value)
-       }
-
-       const changeType = (e) => {
-        console.log(e.target.key)
-        setTypeSelection({type: selectedOption, name: e.target.value, id: e.target.id})
-   }
-
-  return (
-    <div className='system-wrapper'>
-        <h2 className='system-name'>{system.name}</h2>
-        <select value={selectedOption} onChange={changeOption}>
-            <option value='defaultOption' disabled>Select an option</option>
-            <option value='moons'>Moon</option>
-            <option value='orbits'>Orbit</option>
-            <option value='planets'>Planet</option>
-        </select>
-
-        {optionsList && 
-            <select value={typeSelection} onChange={changeType}>
-            <option value='defaultOption' disabled>Select an option</option>
-                {optionsList}
-            </select>
+    useEffect(() => {
+        if (selectedOption !== 'defaultOption') {
+            const url = `https://uexcorp.space/api/2.0/${selectedOption}?id_star_system=${system.id}`;
+            importData(url);
         }
-    </div>
-  )
-}
+    }, [selectedOption, system.id]);
 
-export default Systems
+    const changeType = (e) => {
+        const selectedOptionValue = e.target.value;
+        const selectedOptionId = e.target.selectedOptions[0].getAttribute('data-id');
+        setTypeSelection({ type: selectedOption, name: selectedOptionValue, id: selectedOptionId });
+    };
+
+    useEffect(() => {
+        setSelectedOption('orbits')
+    }, [])
+
+    return (
+        <div className='system-wrapper'>
+            
+            <h2 className='system-name'>{system.name}</h2>
+
+            {optionsList.length > 0 && !isSubmit &&
+            
+            <>
+            <label style={{fontSize: '10px', marginLeft: '8px'}}>{`Where in ${system.name}?  `}</label>
+
+            <br/>
+                <select value={typeSelection.name || 'defaultOption'} onChange={changeType}>
+                    <option value='defaultOption' disabled>Select an option</option>
+                    {optionsList}
+                </select>
+            </>
+            }
+
+            {typeSelection !== 'defaultOption' &&
+                <>
+                    <Terminals selection={typeSelection} system={system} setIsSubmit={setIsSubmit}/>
+                </>
+            }
+
+
+        </div>
+    );
+};
+
+export default Systems;

@@ -6,25 +6,53 @@ import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
-const Commodities = ({commodity, scu}) => {
+const Commodities = ({commodity, scu, item}) => {
+  const[savedCargo, setSavedCargo] = useState()
 
-  return (
-    <table className='commodity-table'>
-      <tr>
-        <th>Commodity</th>
-        <th>SCU</th>
-        <th>EDIT</th>
-      </tr>
-      <tr>
-        <td>{commodity}</td>
-        <td>{scu}</td>
-        <tr>
+  console.log(item)
+
+  useEffect(() =>{
+
+    let exit
+
+    const listItems = () => {
+      let array = []
+      item.cargo.forEach((cargo, i) =>{
+        array.push(
+        <tr key={i}>
+         <td className='comm-row'>{cargo.commodity}</td>
+         <td className='scu-row'>{cargo.scu} SCU</td>
           <td className='comm-edit'>Modify</td>
           |
           <td className='comm-edit'>Delete</td>
-        </tr>       
-      </tr>
+        </tr>
+      )
+      })
+
+      setSavedCargo(array)
+    }
+
+    item ? listItems() : exit = null
+
+  }, [item])
+
+  return (
+
+    <>
+    
+    <table className='commodity-table'>
+      <tbody>
+        <tr>
+          <th className='comm-row'>Commodity</th>
+          <th className='scu-row'>SCU</th>
+          <th className='comm-edit'>EDIT</th>
+        </tr>
+      </tbody>
+
+        {savedCargo}
+
     </table>
+    </>
   )
 }
 

@@ -1,96 +1,131 @@
-import React from 'react'
-import Commodities from './Commodities'
-import { postCommData } from './apiCalls'
-import { useState, useEffect } from 'react'
- 
-const CargoRecord = ({stationData, commData}) => {
-const [isNewLine, setIsNewLine] = useState(false)
-const [selectedComm, setSelectedComm] = useState('')
-const [commodityList, setCommodityList] = useState()
-const [rangeValue, setRangeValue] = useState(0)
-const [commLines, setCommLines] = useState([])
+import React, { useState, useEffect } from 'react';
+import Commodities from './Commodities';
+import commData from '../src/mockCommodityData.json';
+import { postCommData } from './apiCalls';
 
-const handleRangeChange = (event) => {
-    setRangeValue(event.target.value);
+const CargoRecord = ({ selection, system, terminal, item }) => {
+  const [storedCargo, setStoredCargo] = useState([]);
+  const [savedRecords, setSavedRecords] = useState(null);
+  const [addCargoItem, setAddCargoItem] = useState(false);
+  const [commsList, setCommsList] = useState([]);
+  const [scuValue, setScuValue] = useState(0);
+  const [commodity, setCommodity] = useState('');
+  const [scu, setScu] = useState(null);
+
+  useEffect(() => {
+    const records = JSON.parse(localStorage.getItem('cargo_records')) || [];
+    setStoredCargo(records);
+  }, []);
+
+  useEffect(() => {
+    if (selection && system && terminal) {
+      const newRecord = {
+        id: Date.now(),
+        system,
+        orbit: selection,
+        terminal,
+        cargo: [] // Initialize an empty array to hold cargo items
+      };
+
+      const updatedCargo = [...storedCargo, newRecord];
+      setStoredCargo(updatedCargo);
+      localStorage.setItem('cargo_records', JSON.stringify(updatedCargo));
+    }
+  }, [selection, system, terminal]);
+
+  useEffect(() => {
+    if (item) {
+      const element = (
+        <div key={item.id}>
+          <h3>{item.system.name}</h3>
+          <h4>{item.orbit.name}</h4>
+          <h5>{item.terminal.name}</h5>
+        </div>
+      );
+      setSavedRecords(element);
+    }
+  }, [item]);
+
+  useEffect(() => {
+    if (commData && commData.data) {
+      const sortedComms = [...new Set(commData.data.map(comm => comm.commodity_name).sort())];
+      const options = sortedComms.map((comm, index) => (
+        <option key={index} value={comm}>{comm}</option>
+      ));
+      setCommsList(options);
+    }
+  }, []);
+
+  const handleChange = (e) => {
+    setScuValue(e.target.value);
   };
 
-    const addCommodity = (e) => {
-        setIsNewLine(true)
-        const commList = []
-        const elementArray = []
+  const selectComm = (e) => {
+    setCommodity(e.target.value);
+  };
 
-        commData.forEach((comm) => {
-            commList.push(comm.commodity_name)
-        })
-
-        const cleanedList = new Set(commList.sort())
-
-        cleanedList.forEach((comm) => {
-            elementArray.push(<option>{comm}</option>)
-        })
-
-        setCommodityList(elementArray)
+  const addCommodity = () => {
+    if (!commodity || !scuValue) {
+      alert("Please select a commodity and enter a valid SCU value.");
+      return;
     }
 
-    const selectComm = (e) => {
-        setSelectedComm(e.target.value)
+    // Find the most recent record (assuming that's where you want to add the cargo)
+    const updatedCargo = storedCargo.map(record => {
+      if(record && item) {
+
+        if (record.id === item.id) {
+          // Ensure `cargo` is initialized as an array if it's undefined or not an array
+          const cargoArray = Array.isArray(record.cargo) ? record.cargo : [];
+          
+          return {
+            ...record,
+            cargo: [...cargoArray, { commodity, scu: scuValue }]
+          };
+        }
       }
+      return record;
+    });
 
-    const addCommLine = (e) => {
-      let commArray = []
-      const commElement = (<Commodities key={Date.now()} commodity={selectedComm} scu={rangeValue}/>)
-      
-      setCommLines(prev => [...prev, commElement])
-      postData(stationData.Station, rangeValue, selectedComm)
-
-      setSelectedComm('')
-      setRangeValue(0)
-    }
-
-    const postData = (station, scu, comm) => {
-      // postCommData(station, scu, comm)
-    }
-
+    setStoredCargo(updatedCargo);
+    localStorage.setItem('cargo_records', JSON.stringify(updatedCargo));
+    setAddCargoItem(false);
+    setCommodity('');
+    setScuValue(0);
+};
 
   return (
     <div className='cargo-record'>
-        <sup>08/14/24</sup>
-          
-          <p className='station-name'>{stationData.Station}</p>
-        <form className='commodity-form'>
-        <label htmlFor="rangeInput"> Commodity </label>
-            {!isNewLine && <p className='tooltip' onClick={(e) => addCommodity(e)}>+<span className="tooltiptext">Add commodity</span></p>}
-            
-            {isNewLine && commodityList &&
-          <select value={selectedComm} onChange={selectComm}>
-            <option value='' disabled>
-                Select a commodity
-            </option>
-            {commodityList}
-          </select>
-            }
-
-        {selectedComm && 
+      {savedRecords}
+      <span>
+        <p>Add Cargo</p>
+        <i onClick={() => setAddCargoItem(true)} className="fi fi-sr-add"></i>
+      </span>
+      {addCargoItem && (
         <>
-          <label htmlFor="rangeInput"> SCU </label>
-            <input
-            type="number"
-            id="rangeInput"
-            min="0"
-            max="1000"
-            value={rangeValue}
-            onChange={handleRangeChange}
-            />
-          </>
-        }
-
-        {selectedComm && 
-            <p className='tooltip' onClick={(e) => addCommLine(e)}>+<span className="tooltiptext">Add item</span></p>
-        }
-        </form>
-        {commLines}
+          <span>
+            <select value={commodity || 'defaultOption'} onChange={selectComm}>
+              <option value='defaultOption' disabled>Select a commodity</option>
+              {commsList}
+            </select>
+            <label>
+              SCU:
+              <input
+                type="number"
+                value={scuValue}
+                onChange={handleChange}
+                min="0"
+                max="1000"
+                step="1"
+              />
+            </label>
+            <i onClick={addCommodity} className="fi fi-sr-add"></i>
+          </span>
+        </>
+      )}
+      <Commodities commodity={commodity} scu={scu} item={item} />
     </div>
-  )
-}
+  );
+};
 
-export default CargoRecord
+export default CargoRecord;

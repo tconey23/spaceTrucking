@@ -3,7 +3,9 @@ import { getData } from './apiCalls'
 import { useState, useEffect } from 'react'
 import Systems from './Systems'
 
-const MyCargo = () => {
+const MyCargo = ({existingRecords}) => {
+
+  
 
   const systems = 'https://uexcorp.space/api/2.0/star_systems'
 
@@ -51,7 +53,7 @@ const MyCargo = () => {
 
   return (
     <>
-    <p>Add System +</p>
+    {/* <p>Add System +</p> */}
     <div className='new-system'>
       <select value={selectedSystem} onChange={handleChange}>
       <option value="defaultOption" disabled>Select a system</option>
@@ -60,6 +62,11 @@ const MyCargo = () => {
     </div>
       <Systems system={{name: 'Stanton', id: 68}}/>
       {!selectedSystem === 'defaultOption' && <Systems system={selectedSystem}/>}
+      {existingRecords && 
+        <>
+          {existingRecords}
+        </>
+      }
     </>
   )
 }
