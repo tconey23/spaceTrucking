@@ -143,11 +143,13 @@ const MyCargo = ({commData, systemData, systems}) => {
     }
   
     useEffect(() => {
-      orbits ? listOrbits(orbits) : console.log('no orbits')
+      let exit
+      orbits ? listOrbits(orbits) : exit = null
     }, [orbits])
   
     useEffect(() => {
-      selectedOrbit ? orbitOrMoon(selectedOrbit) : console.log('no selection')
+      let exit
+      selectedOrbit ? orbitOrMoon(selectedOrbit) : exit = null
     }, [selectedOrbit])
   
     useEffect(() => {

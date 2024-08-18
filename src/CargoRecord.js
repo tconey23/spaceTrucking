@@ -1,6 +1,7 @@
 import React from 'react'
 import Commodities from './Commodities'
-import { useState } from 'react'
+import { postCommData } from './apiCalls'
+import { useState, useEffect } from 'react'
  
 const CargoRecord = ({stationData, commData}) => {
 const [isNewLine, setIsNewLine] = useState(false)
@@ -34,18 +35,20 @@ const handleRangeChange = (event) => {
     const selectComm = (e) => {
         setSelectedComm(e.target.value)
       }
-      
-      const clearData = () => {
-
-      }
 
     const addCommLine = (e) => {
       let commArray = []
       const commElement = (<Commodities key={Date.now()} commodity={selectedComm} scu={rangeValue}/>)
       
       setCommLines(prev => [...prev, commElement])
+      postData(stationData.Station, rangeValue, selectedComm)
+
       setSelectedComm('')
       setRangeValue(0)
+    }
+
+    const postData = (station, scu, comm) => {
+      // postCommData(station, scu, comm)
     }
 
 

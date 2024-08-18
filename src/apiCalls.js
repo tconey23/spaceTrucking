@@ -27,6 +27,39 @@ const getData = (url) => {
         });        
 }
 
+const postCommData = (station, scu, comm) => {
+    console.log(station, scu, comm)
+
+    const postData = {
+        station: station,
+        scu: scu,
+        comm: comm
+    }
+
+    fetch('https://space-trucking-be-466080496ee3.herokuapp.com/api/cargo', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(postData),
+    })
+        .then(response => response.json())
+        .then(data => console.log(data))
+        .catch(error => console.error('Error:', error));
+}
+
+const getCargo = () => {
+    console.log('fetching')
+    fetch('https://space-trucking-be-466080496ee3.herokuapp.com/api/cargo')
+        .then(response => response.json())
+        .then(data => console.log('Stored Data:', data))
+        .catch(error => console.error('Error:', error));
+}
+
+postCommData('Station A', 'SCU123', 'This is a test cargo')
+
+
 export {
     getData,
+    postCommData,
 }
