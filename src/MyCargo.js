@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import AddCargo from './AddCargo';
-import { animated, useSpring } from '@react-spring/web'
+import { animated, useSpring } from '@react-spring/web';
 
 const MyCargo = ({ cargoRecords, onCargoSubmit }) => {
 
@@ -9,6 +9,7 @@ const MyCargo = ({ cargoRecords, onCargoSubmit }) => {
   const [displayOrbits, setDisplayOrbits] = useState({ 68: true });
   const [displayCargo, setDisplayCargo] = useState({});
   const [addCargo, setAddCargo] = useState();
+  const [inventory, setInventory] = useState([]);
 
   const rotation = useSpring({
     from: { transform: 'rotate(0deg)' },
@@ -58,7 +59,6 @@ const MyCargo = ({ cargoRecords, onCargoSubmit }) => {
     });
 
     localStorage.setItem('cargo_records', JSON.stringify(cargoRecords));
-
     loadStorage();
   };
 
@@ -67,58 +67,75 @@ const MyCargo = ({ cargoRecords, onCargoSubmit }) => {
   }, []);
 
   useEffect(() => {
+    let exit;
+
+    const showCargo = () => {
+      let array = [];
+
+      dataTree.forEach((sys) => {
+        sys.system.orbits.forEach((dat) => {
+          if (dat.stored_cargo.length) {
+            array.push(dat.orbit_name);
+          }
+        });
+      });
+      setInventory(array);
+    };
+
+    if (dataTree.length > 0) {
+      showCargo();
+    }
+  }, [dataTree]);
+
+  useEffect(() => {
     const displayTree = () => {
       const systemElements = dataTree.map((sys) => {
-        const orbits = sys.system.orbits.map((orb) => (
-          
-          <div className='orbits' key={orb.orbit_name}>
-            <span className='orbit-span' key={orb.id}>
-              <h2>{orb.orbit_name}</h2>
-              <i
-                className="fi fi-sr-caret-square-down"
-                onClick={() => {
-                  toggleCargo(orb.orbit_name)
-                  
-                }}>
-              </i>
-            </span>
-            {displayCargo[orb.orbit_name] && (
-              <div className='cargo-wrapper'>
-                <div>
-                  <p>Add Cargo <i className="fi fi-sr-add" onClick={() => {
-                    toggleAddCargo(orb.orbit_name) 
-                    
-                    }}></i></p>
-                </div>
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Commodity</th>
-                      <th>SCU</th>
-                      <th>Actions</th> 
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {orb.stored_cargo && orb.stored_cargo.map((cargo, index) => (
-                      <tr key={index}>
-                        <td>{cargo.commodity}</td>
-                        <td>{cargo.stored_amount}</td>
-                        <td>
-                          <i
-                            className="fi fi-sr-trash"
-                            onClick={() => deleteCargo(orb.orbit_name, index)} 
-                            >
-                          </i>
-                        </td>
+        const orbits = sys.system.orbits.map((orb) => {
+          const isInInventory = inventory.includes(orb.orbit_name);
+
+          return (
+            <div className='orbits' key={orb.orbit_name}>
+              <span className='orbit-span' key={orb.id}>
+                <h2 style={{ color: isInInventory ? 'orange' : 'white' }}>{orb.orbit_name}</h2> 
+                <i style={{ opacity: isInInventory ? 1 : 0, marginRight: '10px', color: 'orange' }} class="fi fi-sr-truck-check"></i>
+                <i
+                  className="fi fi-sr-caret-square-down"
+                  onClick={() => toggleCargo(orb.orbit_name)}
+                ></i>
+              </span>
+              {displayCargo[orb.orbit_name] && (
+                <div className='cargo-wrapper'>
+                  <div>
+                    <p>Add Cargo <i className="fi fi-sr-add" onClick={() => toggleAddCargo(orb.orbit_name)}></i></p>
+                  </div>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Commodity</th>
+                        <th>SCU</th>
+                        <th>Actions</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-            
-          </div>
-        ));
+                    </thead>
+                    <tbody>
+                      {orb.stored_cargo && orb.stored_cargo.map((cargo, index) => (
+                        <tr key={index}>
+                          <td>{cargo.commodity}</td>
+                          <td>{cargo.stored_amount}</td>
+                          <td>
+                            <i
+                              className="fi fi-sr-trash"
+                              onClick={() => deleteCargo(orb.orbit_name, index)} 
+                            ></i>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          );
+        });
 
         return (
           <div className='system' key={sys.system.id}>
@@ -141,9 +158,7 @@ const MyCargo = ({ cargoRecords, onCargoSubmit }) => {
     if (dataTree.length > 0) {
       displayTree();
     }
-  }, [dataTree, displayOrbits, displayCargo]);
-
-
+  }, [dataTree, displayOrbits, displayCargo, inventory]);
 
   return (
     <div className='systems-list'>
