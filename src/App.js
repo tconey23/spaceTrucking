@@ -1,95 +1,104 @@
-import logo from './logo.svg';
 import './App.css';
 import Hauler from './Hauler'; 
 import { Routes, Route, NavLink } from 'react-router-dom';
-import commodities from '../src/mockCommodityData.json'
-import systems from './mockStarSystems.json'
-import terminals from './mockTerminals.json'
 import MyCargo from './MyCargo';
 import { useEffect, useState } from 'react';
-import Scripts from './Scripts';
 import CargoRecord from './CargoRecord';
+import { getData } from './apiCalls';
 
 function App() {
+  
+  const [existingRecords, setExistingRecords] = useState();
+  const [stations, setStations] = useState();
+  const [defaultSystem, setDefaultSystem] = useState(68);
+  const [reloadCargo, setReloadCargo] = useState(false)
 
-  const [commodityData, setCommodityData] = useState()
-  const [systemData, setSystemData] = useState()
-  const [terminalData, setTerminalData] = useState()
-  const [storageTemplate, setStorageTemplate] = useState()
-  const [existingRecords,setExistingRecords] = useState()
+  const stationUrl = `https://uexcorp.space/api/2.0/space_stations?id_star_system=${defaultSystem}`;
 
-useEffect(() => {
-  setCommodityData(commodities.data) 
-}, [])
+  const handleCargoSubmit = () => {
+    setReloadCargo(prev => !prev); 
+  };
 
-useEffect(() => {
-  const sysNames = (data) => {
-    let sysArray = []
+  useEffect(() => {
 
-    data.forEach((sys) => {
-      sysArray.push(sys.name)
-    })
-    setSystemData(sysArray)
-  }
+    const storedRecords = localStorage.getItem('cargo_records');
+    let cargoRecords = [];
 
-  systems ? sysNames(systems.data) : setSystemData(null)
-}, [systems])
+    if (storedRecords) {
+      try {
+        cargoRecords = JSON.parse(storedRecords) || [];
+      } catch (error) {
+        console.error('Error parsing JSON from localStorage:', error);
+        cargoRecords = [];
+      }
+    }
 
 
-useEffect(() => {
-  const sysNames = (data) => {
-    let sysArray = []
+    getData(stationUrl)
+      .then(data => {
+        setStations(data.data);
 
-    data.forEach((sys) => {
-      sysArray.push(sys.name)
-    })
-    setSystemData(sysArray)
-  }
+        data.data.forEach(station => {
+          const systemIndex = cargoRecords.findIndex(system => system.system.id === station.id_star_system);
 
-  systems ? sysNames(systems.data) : setSystemData(null)
-}, [systems])
+          if (systemIndex === -1) {
+            cargoRecords.push({
+              system: {
+                id: station.id_star_system,
+                name: station.star_system_name,
+                orbits: [],
+                moons: [],
+                cities: []
+              }
+            });
+          }
 
-useEffect(() => {
+          const updatedSystem = cargoRecords.find(system => system.system.id === station.id_star_system);
 
-  const template = {
-    cargo_records : []
-  }
 
-  setStorageTemplate(template)
+          if (station.id_orbit) {
+            const orbitIndex = updatedSystem.system.orbits.findIndex(orbit => orbit.id === station.id_orbit);
+            if (orbitIndex === -1) {
+              updatedSystem.system.orbits.push({
+                id: station.id_orbit,
+                orbit_name: station.orbit_name,
+                stored_cargo: []
+              });
+            }
+          }
+        });
 
-  const storedData = JSON.parse(localStorage.getItem('cargo_records')) || [];
+        localStorage.setItem('cargo_records', JSON.stringify(cargoRecords));
 
-  const displayRecords = () => {
-    let array = []
-    console.log(storedData)
-    storedData.forEach((item) => {
-      array.push(<CargoRecord item={item}/>)
-    })
-    setExistingRecords(array)
-  }
 
-  storedData !== 'undefined' ? displayRecords() : localStorage.setItem('cargo_records', JSON.stringify(storageTemplate))
+        const array = cargoRecords.map(system => (
+          system.system.orbits.map(orbit => (
+            orbit.stored_cargo.map(cargo => <CargoRecord key={cargo.id} item={cargo} />)
+          ))
+        ));
+        setExistingRecords(array);
 
-}, [])
-
+      })
+      .catch(error => console.error('Error fetching stations:', error));
+  }, [stationUrl]);
 
   return (
     <main> 
-        <header>
-          <div className='link-container'>
-            <NavLink to='spaceTrucking/Home'>Home</NavLink>
-            <NavLink to='spaceTrucking/MyCargo'>My Cargo</NavLink>
-          </div>
-          <h1 className='site-name'>Space Trucking</h1>
-          <div className='header-spacer'>
-            EXTERNAL LINKS - WIP
-          </div>
-        </header>
+      <header>
+        <div className='link-container'>
+          <NavLink to='spaceTrucking/Home'>Home</NavLink>
+          <NavLink to='spaceTrucking/MyCargo'>My Cargo</NavLink>
+        </div>
+        <h1 className='site-name'>Space Trucking</h1>
+        <div className='header-spacer'>
+          EXTERNAL LINKS - WIP
+        </div>
+      </header>
 
-        <Routes>
-          <Route path='spacetrucking/Home' element={<Hauler />}/>
-          {commodityData && systemData && <Route path='spacetrucking/MyCargo' element={<MyCargo systems={systems} systemData={systemData} commData={commodityData} existingRecords={existingRecords}/>}/>}
-        </Routes>
+      <Routes>
+        <Route path='spacetrucking/Home' element={<Hauler />}/>
+        <Route path='spacetrucking/MyCargo' element={<MyCargo key={reloadCargo} cargoRecords={existingRecords} onCargoSubmit={handleCargoSubmit}/>}/>
+      </Routes>
     </main>
   );
 }

@@ -2,7 +2,8 @@
 @import "~@flaticon/flaticon-uicons/css/all/all";
 
 body{
-  font-family: "Orbitron", sans-serif
+  font-family: "Orbitron", sans-serif;
+  overflow: hidden;
 }
 
 .App {
@@ -278,4 +279,125 @@ main {
 h3, h4, h5 {
   margin-top: -1px;
   height: 10px;
+}
+
+
+
+
+.systems-list{
+  width: 95vw;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+    .system{
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      width: 95%;
+
+      .orbits{
+        width: 80%;
+        border: 1px solid white;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        margin-top: 5px;
+      }
+
+      .cargo-wrapper{
+        width: 99%;
+
+          p{
+            font-size: 13px;
+            margin-left: 8px
+          }
+      }
+
+      table{
+        width: 99%;
+        border: 1px, solid white;
+        margin: 5px;
+        text-align-last: left;
+
+
+        th, td{
+          width: 50%;
+          font-size: 15px;
+        }
+
+      }
+ 
+      .orbit-span{
+        margin-left: 10%;
+        width: 80%;
+        margin-top: 1px;
+        margin-bottom: 1px;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        align-items: center;
+
+          h2{
+            margin-left: 10px;
+            margin-top: 1px;
+            margin-bottom: 1px;
+            font-size: 20px;
+            width: 96%
+          }
+      }
+
+        h1{
+          font-size: 30px;
+          margin-left: 5%;
+          margin-right: 5px;
+        }
+
+        .system-span{
+          width: 100%;
+          display: flex;
+          flex-direction: row;
+          justify-content: flex-start;
+          align-items: baseline;
+          position: relative;
+        }
+
+
+
+    }
+
+    .orbit-wrapper{
+      width: 100%;
+      height: 80vh;
+      overflow-x: hidden;
+      overflow-y: scroll;
+    }
+
+}
+
+.cargo-menu{
+  position: absolute;
+  width: 50%;
+  height: 250px;
+  left: 20vw;
+  top: 30vh;
+  border: 1px solid white;
+  border-radius: 15px;
+  background: #282c34;
+  padding: 5px;
+  filter: drop-shadow(2px 4px 6px white);
+}
+
+.cargo-form{
+  label{
+    font-size: 15px;
+  }
+  input{
+    margin-bottom: 10px;
+    padding-left: 20px;
+  }
+  i{
+    margin-left: 10px;
+  }
 }
