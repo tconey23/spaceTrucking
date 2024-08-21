@@ -53,19 +53,22 @@ const customStyles = {
       border: '1px solid black',
       scale: '70%',
       marginBottom: '-20px',
-      marginTop: '-30px',
-      marginLeft: '-84px'
+      marginTop: '-20px',
+      marginLeft: '-84px',
+      overflowY: 'scroll',
+      maxHeight: '30px',
+      maxWidth: '800px'
     }),
     menu: (provided) => ({
       ...provided,
       borderRadius: '10px',
       fontSize: '15px',
-      scale: '70%'
+      scale: '70%',
     }),
     multiValue: (provided) => ({
       ...provided,
       backgroundColor: 'lightblue',
-      fontSize: '15px'
+      fontSize: '15px',
     }),
     multiValueLabel: (provided) => ({
       ...provided,
