@@ -4,7 +4,6 @@ import { getData } from './apiCalls';
 import { customStyles, customStylesSmall } from './dropDownStyles';
 
 const MyCargo = ({ systems }) => {
-
   const [systemEl, setSystemEl] = useState([]);
   const [systemOpt, setSystemOpt] = useState([]);
   const [selectedOptions, setSelectedOptions] = useState([]);
@@ -13,6 +12,7 @@ const MyCargo = ({ systems }) => {
   const [expandedMoons, setExpandedMoons] = useState({});
   const [expandedOrbits, setExpandedOrbits] = useState({});
   const [expandedOutposts, setExpandedOutposts] = useState({});
+  const [expandedStations, setExpandedStations] = useState({});
   const [systemPlanets, setSystemPlanets] = useState({});
   const [planetMoons, setPlanetMoons] = useState({});
   const [planetOrbits, setPlanetOrbits] = useState({});
@@ -74,23 +74,35 @@ const MyCargo = ({ systems }) => {
                     <div className="planet-details">
                       <Select
                         isMulti
-                        options={planetMoons[planet.value] || []}
+                        options={[...(planetMoons[planet.value] || []), ...(planetOrbits[planet.value] || [])]}
                         value={selectedMoons[planet.value] || []}
                         styles={customStylesSmall}
                         onChange={(selected) => handleMoonChange(selected, planet.value)}
                       />
-                      {selectedMoons[planet.value] && selectedMoons[planet.value].length > 0 && selectedMoons[planet.value].map(moon => (
-                        <div className='selected-moon' key={moon.value}>
+                      {(selectedMoons[planet.value] || []).map(moonOrOrbit => (
+                        <div className={`selected-${moonOrOrbit.type}`} key={moonOrOrbit.value}>
                           <span>
-                            <p className='moon-name'>{moon.label}</p>
+                            <p className={`${moonOrOrbit.type}-name`}>{moonOrOrbit.label}</p>
                             <i
-                              className={expandedMoons[moon.value] ? "fi fi-sr-caret-circle-down" : "fi fi-sr-caret-circle-right"}
-                              onClick={() => toggleExpandMoon(moon.value, sys.id)}
+                              className={
+                                moonOrOrbit.type === 'moon'
+                                  ? (expandedMoons[moonOrOrbit.value] ? "fi fi-sr-caret-circle-down" : "fi fi-sr-caret-circle-right")
+                                  : moonOrOrbit.type === 'station'
+                                  ? (expandedStations[moonOrOrbit.value] ? "fi fi-sr-caret-circle-down" : "fi fi-sr-caret-circle-right")
+                                  : (expandedOrbits[moonOrOrbit.value] ? "fi fi-sr-caret-circle-down" : "fi fi-sr-caret-circle-right")
+                              }
+                              onClick={() =>
+                                moonOrOrbit.type === 'moon'
+                                  ? toggleExpandMoon(moonOrOrbit.value, sys.id, planet.value)
+                                  : moonOrOrbit.type === 'station'
+                                  ? toggleExpandStation(moonOrOrbit.value)
+                                  : toggleExpandOrbit(moonOrOrbit.value)
+                              }
                             ></i>
                           </span>
-                          {expandedMoons[moon.value] && (
+                          {moonOrOrbit.type === 'moon' && expandedMoons[moonOrOrbit.value] && (
                             <div className="moon-details">
-                              {moonOutposts[moon.value] && moonOutposts[moon.value].length > 0 && moonOutposts[moon.value].map(outpost => (
+                              {moonOutposts[moonOrOrbit.value] && moonOutposts[moonOrOrbit.value].length > 0 && moonOutposts[moonOrOrbit.value].map(outpost => (
                                 <div className='selected-outpost' key={outpost.value}>
                                   <span>
                                     <p className='outpost-name'>{outpost.label}</p>
@@ -101,7 +113,6 @@ const MyCargo = ({ systems }) => {
                                   </span>
                                   {expandedOutposts[outpost.value] && (
                                     <div className="outpost-details">
-                                      {/* Render outpost-specific details here */}
                                       <p>Details for {outpost.label}</p>
                                     </div>
                                   )}
@@ -109,21 +120,14 @@ const MyCargo = ({ systems }) => {
                               ))}
                             </div>
                           )}
-                        </div>
-                      ))}
-                      {planetOrbits[planet.value] && planetOrbits[planet.value].length > 0 && planetOrbits[planet.value].map(orbit => (
-                        <div className='selected-orbit' key={orbit.value}>
-                          <span>
-                            <p className='orbit-name'>{orbit.label}</p>
-                            <i
-                              className={expandedOrbits[orbit.value] ? "fi fi-sr-caret-circle-down" : "fi fi-sr-caret-circle-right"}
-                              onClick={() => toggleExpandOrbit(orbit.value)}
-                            ></i>
-                          </span>
-                          {expandedOrbits[orbit.value] && (
+                          {moonOrOrbit.type === 'station' && expandedStations[moonOrOrbit.value] && (
+                            <div className="station-details">
+                              <p>Details for {moonOrOrbit.label}</p>
+                            </div>
+                          )}
+                          {moonOrOrbit.type === 'orbit' && expandedOrbits[moonOrOrbit.value] && (
                             <div className="orbit-details">
-                              {/* Render orbit-specific details here */}
-                              <p>Details for {orbit.label}</p>
+                              <p>Details for {moonOrOrbit.label}</p>
                             </div>
                           )}
                         </div>
@@ -141,7 +145,7 @@ const MyCargo = ({ systems }) => {
     } else {
       setSystemEl([]);
     }
-  }, [selectedOptions, systems, expandedSystems, systemPlanets, selectedPlanets, expandedPlanets, planetMoons, selectedMoons, expandedMoons, moonOutposts, expandedOutposts, planetOrbits, expandedOrbits]);
+  }, [selectedOptions, systems, expandedSystems, systemPlanets, selectedPlanets, expandedPlanets, planetMoons, selectedMoons, expandedMoons, moonOutposts, expandedOutposts, planetOrbits, expandedOrbits, expandedStations]);
 
   const handleChange = (selected) => {
     setSelectedOptions(selected);
@@ -164,25 +168,20 @@ const MyCargo = ({ systems }) => {
         [systemId]: planetOptions,
       }));
 
-      const defaultPlanets = planetOptions.filter(opt => opt.label === 'ArcCorp' || opt.label === 'Hurston');
-      setSelectedPlanets(prevState => ({
-        ...prevState,
-        [systemId]: defaultPlanets,
-      }));
+      setSelectedPlanets([planetOptions])
 
-      // Fetch orbits after planets
       const orbitData = await getData(`https://uexcorp.space/api/2.0/orbits?id_star_system=${systemId}`);
-      console.log(orbitData)
       const orbitOptions = orbitData.data.map(orbit => ({
         value: orbit.id,
         label: orbit.name_origin,
         name: orbit.name,
-        planetName: orbit.name.split(' ')[0], // Assuming the orbit's planet name is the first word
+        type: 'orbit',
+        planetName: orbit.name.split(' ')[0],
       }));
 
       let orbitMapping = {};
       orbitOptions.forEach(orbit => {
-        const planet = planetOptions.find(p => orbit.planetName.includes(p.label) && orbit.name.includes(''));
+        const planet = planetOptions.find(p => orbit.planetName.includes(p.label) && orbit.name.length > orbit.planetName.length);
         if (planet) {
           if (!orbitMapping[planet.value]) orbitMapping[planet.value] = [];
           orbitMapping[planet.value].push(orbit);
@@ -207,35 +206,58 @@ const MyCargo = ({ systems }) => {
       const moonOptions = data.data.map(moon => ({
         value: moon.id,
         label: moon.name,
+        type: 'moon',
       }));
+
+      const planetStationData = await getData(`https://uexcorp.space/api/2.0/space_stations?id_star_system=${systemId}&id_planet=${planetId}`);
+      const planetStationOptions = planetStationData.data.map(station => ({
+        value: station.id,
+        label: station.name,
+        type: 'station',
+      }));
+
+      const cityData = await getData(`https://uexcorp.space/api/2.0/cities?id_star_system=${systemId}&id_planet=${planetId}`);
+      const cityOptions = cityData.data.map(city => ({
+        value: city.id,
+        label: city.name,
+        type: 'city',
+      }));
+
+      const combinedOptions = [...moonOptions, ...planetStationOptions, ...cityOptions];
+
       setPlanetMoons(prevState => ({
         ...prevState,
-        [planetId]: moonOptions,
+        [planetId]: combinedOptions,
       }));
 
       setSelectedMoons(prevState => ({
         ...prevState,
-        [planetId]: moonOptions,
+        [planetId]: combinedOptions
       }));
     }
   };
 
-  const toggleExpandMoon = async (moonId, systemId) => {
+  const toggleExpandMoon = async (moonId, systemId, planetId) => {
     setExpandedMoons(prevState => ({
       ...prevState,
       [moonId]: !prevState[moonId],
     }));
 
     if (!expandedMoons[moonId]) {
-      const data = await getData(`https://uexcorp.space/api/2.0/outposts?id_star_system=${systemId}&id_moon=${moonId}`);
+      const data = await getData(`https://uexcorp.space/api/2.0/outposts?id_star_system=${systemId}&id_planet=${planetId}&id_moon=${moonId}`);
       const outpostOptions = data.data.map(outpost => ({
         value: outpost.id,
         label: outpost.name,
       }));
-      setMoonOutposts(prevState => ({
-        ...prevState,
-        [moonId]: outpostOptions,
-      }));
+
+      if (outpostOptions.length) {
+        setMoonOutposts(prevState => ({
+          ...prevState,
+          [moonId]: outpostOptions,
+        }));
+      } else {
+        toggleExpandOutpost(moonId);
+      }
     }
   };
 
@@ -250,6 +272,13 @@ const MyCargo = ({ systems }) => {
     setExpandedOutposts(prevState => ({
       ...prevState,
       [outpostId]: !prevState[outpostId],
+    }));
+  };
+
+  const toggleExpandStation = (stationId) => {
+    setExpandedStations(prevState => ({
+      ...prevState,
+      [stationId]: !prevState[stationId],
     }));
   };
 
