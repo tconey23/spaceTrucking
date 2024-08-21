@@ -27,8 +27,29 @@ const getData = (url) => {
         });        
 }
 
+const getGalactapedia = (query) => {
+    return fetch('https://api.star-citizen.wiki/api/v2/galactapedia/search', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            "query": query,
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        const result = data.data.find(dat => dat.type === 'PlanetMoonSpaceStationPlatform');
+        return result ? result['thumbnail'] : null; // Return thumbnail if found, else return null
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        return null; // Return null or handle error as needed
+    });
+};
 
 
 export {
     getData,
+    getGalactapedia
 }

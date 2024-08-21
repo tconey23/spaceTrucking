@@ -11,6 +11,7 @@ const Hauler = () => {
   const [intervalState, setIntervalState] = useState(null)
   const [allCommPrices, setAllCommPrices] = useState(0)
   const [priceObjects, setPriceObjects] = useState()
+  const [randomNumber, setRandomNumber] = useState(1)
 
   const settings = {
     dots: false,
@@ -24,7 +25,7 @@ const Hauler = () => {
     centerPadding: '50px'
 };
   
-  const randomImage = 'https://api.star-citizen.wiki/api/v2/galactapedia';
+  const randomImage = `https://api.star-citizen.wiki/api/v2/galactapedia?page=${randomNumber}`;
   const commodities = 'https://uexcorp.space/api/2.0/commodities_prices_all'
 
   const getImage = () => {
@@ -60,6 +61,9 @@ const Hauler = () => {
   }
 
   useEffect(() => {
+    const rand = Math.floor(Math.random() * (90 - 1 + 1)) + 1
+    setRandomNumber(rand)
+
     getCommodities()
     getImage();
     const intervalID = setInterval(getImage, 5000);
@@ -69,6 +73,12 @@ const Hauler = () => {
       clearInterval(intervalID);
     };
   }, []);
+
+  useEffect(() => {
+    console.log(randomNumber)
+    const rand = Math.floor(Math.random() * (90 - 1 + 1)) + 1
+    setRandomNumber(rand)
+  }, [imageUrl])
 
   useEffect(() => {
     let exit

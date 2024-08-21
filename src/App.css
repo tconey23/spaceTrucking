@@ -318,6 +318,8 @@ h3, h4, h5 {
 
 .planet-details{
   margin-left: 50px;
+  background-size: cover;
+  width: 88vw;
 }
 
 .fi{
@@ -345,4 +347,8 @@ h3, h4, h5 {
   p{
     font-size: 15px;
   }
+}
+
+.planet-image{
+
 }

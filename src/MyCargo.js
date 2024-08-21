@@ -3,6 +3,7 @@ import Select from 'react-select';
 import { getData } from './apiCalls';
 import { customStyles, customStylesSmall } from './dropDownStyles';
 import CargoRecord from './CargoRecord';
+import { getGalactapedia } from './apiCalls';
 
 const MyCargo = ({ systems }) => {
   const [systemEl, setSystemEl] = useState([]);
@@ -21,6 +22,8 @@ const MyCargo = ({ systems }) => {
   const [selectedPlanets, setSelectedPlanets] = useState({});
   const [selectedMoons, setSelectedMoons] = useState({});
   const [storedCargoRecords, setStoredCargoRecords] = useState([]);
+  const [refreshCargo, setRefreshCargo] = useState()
+  const [planetImg, setPlantImg] = useState()
 
   useEffect(() => {
     const records = JSON.parse(localStorage.getItem('cargo_records')) || [];
@@ -74,7 +77,7 @@ const MyCargo = ({ systems }) => {
                     <p className='planet-name'>{planet.label}</p>
                     <i
                       className={expandedPlanets[planet.value] ? "fi fi-sr-caret-circle-down" : "fi fi-sr-caret-circle-right"}
-                      onClick={() => toggleExpandPlanet(planet.value, sys.id)}
+                      onClick={() => toggleExpandPlanet(planet.value, sys.id, planet.label)}
                     ></i>
                   </span>
                   {expandedPlanets[planet.value] && (
@@ -218,7 +221,8 @@ const MyCargo = ({ systems }) => {
     }
   };
 
-  const toggleExpandPlanet = async (planetId, systemId) => {
+  const toggleExpandPlanet = async (planetId, systemId, planet) => {
+
     setExpandedPlanets(prevState => ({
       ...prevState,
       [planetId]: !prevState[planetId],
@@ -226,6 +230,8 @@ const MyCargo = ({ systems }) => {
 
     if (!expandedPlanets[planetId]) {
       const data = await getData(`https://uexcorp.space/api/2.0/moons?id_planet=${planetId}`);
+      const thumbnail = await getGalactapedia(planet)
+      setPlantImg(thumbnail)
       const moonOptions = data.data.map(moon => ({
         value: moon.id,
         label: moon.name,

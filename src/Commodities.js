@@ -1,43 +1,42 @@
-import React from 'react'
-import { useEffect, useMemo, useState } from 'react'
-import { getData } from './apiCalls'
-import commData from '../src/mockCommodityData.json'
-import Slider from 'react-slick';
+import React, { useState, useEffect } from 'react';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
-const Commodities = ({commodity, scu}) => {
-  const[savedCargo, setSavedCargo] = useState()
+const Commodities = ({ commodity: initialCommodity, scu: initialScu, inv, commsList, addCommodity }) => {
+  const [editRecord, setEditRecord] = useState(null);
+  const [commodity, setCommodity] = useState(initialCommodity); // Local state for commodity
+  const [scuValue, setScuValue] = useState(initialScu); // Local state for SCU
 
-  useEffect(() =>{
+  useEffect(() => {
+    if (editRecord) {
+      // Initialize the local state with current values when entering edit mode
+      setCommodity(initialCommodity);
+      setScuValue(initialScu);
+    }
+  }, [editRecord, initialCommodity, initialScu]);
 
-    let exit
+  const handleChange = (e) => {
+    setScuValue(e.target.value);
+  };
 
-    // const listItems = () => {
-    //   let array = []
-    //   item.cargo.forEach((cargo, i) =>{
-    //     array.push(
-    //     <tr key={i}>
-    //      <td className='comm-row'>{cargo.commodity}</td>
-    //      <td className='scu-row'>{cargo.scu} SCU</td>
-    //       <td className='comm-edit'>Modify</td>
-    //       |
-    //       <td className='comm-edit'>Delete</td>
-    //     </tr>
-    //   )
-    //   })
+  const selectComm = (e) => {
+    setCommodity(e.target.value);
+  };
 
-    //   setSavedCargo(array)
-    // }
+  const updateInventory = () => {
+    addCommodity('update', inv.id, scuValue, commodity);
+    setEditRecord(null);
+  };
 
-    // item ? listItems() : exit = null
+  const deleteInventory = () => {
+    addCommodity('delete', inv.id);
+  };
 
-  }, [])
+  const editInventory = () => {
+    setEditRecord(inv.id);
+  };
 
   return (
-
-    <>
-    
     <table className='commodity-table'>
       <tbody>
         <tr>
@@ -47,19 +46,46 @@ const Commodities = ({commodity, scu}) => {
           <th className='comm-edit'>DELETE</th>
         </tr>
         <tr>
-          <td className='comm-row'>{commodity}</td>
-          <td className='scu-row'>{scu}</td>
+          {!editRecord &&
+            <>
+              <td className='comm-row'>{initialCommodity}</td>
+              <td className='scu-row'>{initialScu}</td>
+            </>
+          }
+          {editRecord &&
+            <>
+              <td className='comm-row'>            
+                <select value={commodity} onChange={selectComm}>
+                  <option value='defaultOption' disabled>Select a commodity</option>
+                  {commsList}
+                </select>
+              </td>
+              <td className='scu-row'>
+                <input
+                  type="number"
+                  value={scuValue}
+                  onChange={handleChange}
+                  min="0"
+                  max="1000"
+                  step="1"
+                />
+              </td>
+            </>
+          }
           <td className='comm-edit'>
-            <i class="fi fi-sr-pen-square"></i>
-          </td>
+            {editRecord ? 
+            <i id={inv.id} onClick={updateInventory} className="fi fi-sr-add"></i>
+            :
+            <i id={inv.id} onClick={editInventory} className="fi fi-sr-pen-square"></i>
+            }
+            </td>
           <td className='comm-edit'>
-            <i class="fi fi-sr-trash"></i>
+            <i id={inv.id} onClick={deleteInventory} className="fi fi-sr-trash"></i>
           </td>
         </tr>
       </tbody>
     </table>
-    </>
-  )
-}
+  );
+};
 
-export default Commodities
+export default Commodities;
