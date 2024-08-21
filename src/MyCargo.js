@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
 import { getData } from './apiCalls';
 import { customStyles, customStylesSmall } from './dropDownStyles';
+import CargoRecord from './CargoRecord';
 
 const MyCargo = ({ systems }) => {
   const [systemEl, setSystemEl] = useState([]);
@@ -19,6 +20,12 @@ const MyCargo = ({ systems }) => {
   const [moonOutposts, setMoonOutposts] = useState({});
   const [selectedPlanets, setSelectedPlanets] = useState({});
   const [selectedMoons, setSelectedMoons] = useState({});
+  const [storedCargoRecords, setStoredCargoRecords] = useState([]);
+
+  useEffect(() => {
+    const records = JSON.parse(localStorage.getItem('cargo_records')) || [];
+    setStoredCargoRecords(records);
+  }, []);
 
   useEffect(() => {
     const displaySystems = (systems) => {
@@ -54,13 +61,13 @@ const MyCargo = ({ systems }) => {
           </span>
           {expandedSystems[sys.id] && (
             <div className="system-details">
-              <Select
+              {!expandedPlanets &&<Select
                 isMulti
                 options={systemPlanets[sys.id] || []}
                 value={selectedPlanets[sys.id] || []}
                 styles={customStylesSmall}
                 onChange={(selected) => handlePlanetChange(selected, sys.id)}
-              />
+              />}
               {selectedPlanets[sys.id] && selectedPlanets[sys.id].length > 0 && selectedPlanets[sys.id].map(planet => (
                 <div className='selected-planet' key={planet.value}>
                   <span>
@@ -113,7 +120,12 @@ const MyCargo = ({ systems }) => {
                                   </span>
                                   {expandedOutposts[outpost.value] && (
                                     <div className="outpost-details">
-                                      <p>Details for {outpost.label}</p>
+                                      <CargoRecord parentData={{
+                                        system: sys,
+                                        planet: planet,
+                                        moonOrOrbit,
+                                        outpost
+                                      }} />
                                     </div>
                                   )}
                                 </div>
@@ -122,12 +134,20 @@ const MyCargo = ({ systems }) => {
                           )}
                           {moonOrOrbit.type === 'station' && expandedStations[moonOrOrbit.value] && (
                             <div className="station-details">
-                              <p>Details for {moonOrOrbit.label}</p>
+                              <CargoRecord parentData={{
+                                system: sys,
+                                planet,
+                                moonOrOrbit,
+                              }} />
                             </div>
                           )}
                           {moonOrOrbit.type === 'orbit' && expandedOrbits[moonOrOrbit.value] && (
                             <div className="orbit-details">
-                              <p>Details for {moonOrOrbit.label}</p>
+                              <CargoRecord parentData={{
+                                system: sys,
+                                planet,
+                                moonOrOrbit,
+                              }} />
                             </div>
                           )}
                         </div>
@@ -168,7 +188,10 @@ const MyCargo = ({ systems }) => {
         [systemId]: planetOptions,
       }));
 
-      setSelectedPlanets([planetOptions])
+      setSelectedPlanets(prevState => ({
+        ...prevState,
+        [systemId]: planetOptions,
+      }))
 
       const orbitData = await getData(`https://uexcorp.space/api/2.0/orbits?id_star_system=${systemId}`);
       const orbitOptions = orbitData.data.map(orbit => ({

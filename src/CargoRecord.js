@@ -1,51 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import Commodities from './Commodities';
 import commData from '../src/mockCommodityData.json';
-import { postCommData } from './apiCalls';
 
-const CargoRecord = ({ selection, system, terminal, item }) => {
+const CargoRecord = ({ item, parentData }) => {
   const [storedCargo, setStoredCargo] = useState([]);
-  const [savedRecords, setSavedRecords] = useState(null);
   const [addCargoItem, setAddCargoItem] = useState(false);
   const [commsList, setCommsList] = useState([]);
   const [scuValue, setScuValue] = useState(0);
   const [commodity, setCommodity] = useState('');
-  const [scu, setScu] = useState(null);
+  const [inventory, setInventory] = useState([]);
 
   useEffect(() => {
+    // Load stored cargo records from localStorage
     const records = JSON.parse(localStorage.getItem('cargo_records')) || [];
     setStoredCargo(records);
-  }, []);
 
-  useEffect(() => {
-    if (selection && system && terminal) {
-      const newRecord = {
-        id: Date.now(),
-        system,
-        orbit: selection,
-        terminal,
-        cargo: [] // Initialize an empty array to hold cargo items
-      };
+    // Filter records to match the current parentData
+    const matchedInventory = records.find(
+      (rec) =>
+        rec.parentData.moonOrOrbit.label === parentData.moonOrOrbit.label &&
+        rec.parentData.planet.label === parentData.planet.label &&
+        rec.parentData.system.name === parentData.system.name
+    );
 
-      const updatedCargo = [...storedCargo, newRecord];
-      setStoredCargo(updatedCargo);
-      localStorage.setItem('cargo_records', JSON.stringify(updatedCargo));
+    if (matchedInventory) {
+      setInventory(matchedInventory.cargo);
     }
-  }, [selection, system, terminal]);
+  }, [parentData]);
 
-  useEffect(() => {
-    if (item) {
-      const element = (
-        <div key={item.id}>
-          <h3>{item.system.name}</h3>
-          <h4>{item.orbit.name}</h4>
-          <h5>{item.terminal.name}</h5>
-        </div>
-      );
-      setSavedRecords(element);
-    }
-  }, [item]);
-
+  // Load commodities data for the select dropdown
   useEffect(() => {
     if (commData && commData.data) {
       const sortedComms = [...new Set(commData.data.map(comm => comm.commodity_name).sort())];
@@ -70,37 +53,54 @@ const CargoRecord = ({ selection, system, terminal, item }) => {
       return;
     }
 
-    // Find the most recent record (assuming that's where you want to add the cargo)
+    // Find the correct record to update or add a new record if it doesn't exist
     const updatedCargo = storedCargo.map(record => {
-      if(record && item) {
-
-        if (record.id === item.id) {
-          // Ensure `cargo` is initialized as an array if it's undefined or not an array
-          const cargoArray = Array.isArray(record.cargo) ? record.cargo : [];
-          
-          return {
-            ...record,
-            cargo: [...cargoArray, { commodity, scu: scuValue }]
-          };
-        }
+      if (
+        record.parentData.moonOrOrbit.label === parentData.moonOrOrbit.label &&
+        record.parentData.planet.label === parentData.planet.label &&
+        record.parentData.system.name === parentData.system.name
+      ) {
+        return {
+          ...record,
+          cargo: [...(record.cargo || []), { commodity, scu: scuValue }]
+        };
       }
       return record;
     });
 
-    setStoredCargo(updatedCargo);
-    localStorage.setItem('cargo_records', JSON.stringify(updatedCargo));
+    // If no matching record was found, add a new one
+    const recordExists = updatedCargo.some(
+      record =>
+        record.parentData.moonOrOrbit.label === parentData.moonOrOrbit.label &&
+        record.parentData.planet.label === parentData.planet.label &&
+        record.parentData.system.name === parentData.system.name
+    );
+
+    const newCargoList = recordExists
+      ? updatedCargo
+      : [...updatedCargo, { id: Date.now(), parentData, cargo: [{ commodity, scu: scuValue }] }];
+
+    // Update localStorage and component state
+    setStoredCargo(newCargoList);
+    localStorage.setItem('cargo_records', JSON.stringify(newCargoList));
     setAddCargoItem(false);
     setCommodity('');
     setScuValue(0);
-};
+    setInventory((prevInventory) => [...prevInventory, { commodity, scu: scuValue }]);
+  };
 
   return (
     <div className='cargo-record'>
-      {savedRecords}
+      <h3>{parentData.system.name}</h3>
+      <h4>{parentData.planet.label}</h4>
+      <h5>{parentData.moonOrOrbit.label}</h5>
+
       <span>
         <p>Add Cargo</p>
         <i onClick={() => setAddCargoItem(true)} className="fi fi-sr-add"></i>
       </span>
+
+
       {addCargoItem && (
         <>
           <span>
@@ -117,13 +117,15 @@ const CargoRecord = ({ selection, system, terminal, item }) => {
                 min="0"
                 max="1000"
                 step="1"
-              />
+                />
             </label>
             <i onClick={addCommodity} className="fi fi-sr-add"></i>
           </span>
         </>
       )}
-      <Commodities commodity={commodity} scu={scu} item={item} />
+      {inventory.map((inv, index) => (
+        <Commodities key={index} commodity={inv.commodity} scu={inv.scu} />
+      ))}
     </div>
   );
 };

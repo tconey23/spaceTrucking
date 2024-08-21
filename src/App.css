@@ -204,8 +204,8 @@ header{
 
 select, input{
   border-radius: 20px;
-  /* box-shadow: 2px 2px 5px #0000008c; */
   padding: 6px;
+  padding-left: 10px;
   background: #ffffff00;
   border: none;
   color: white;
@@ -213,10 +213,12 @@ select, input{
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
+  margin: 10px;
   transition: all 0.5s ease-in-out
 }
 
 select:hover, input:hover{
+  border-radius: 20px;
   border: 1px solid white;
   background: white;
   color: black;
@@ -224,6 +226,8 @@ select:hover, input:hover{
   -moz-appearance: auto;
   appearance: auto;
   padding: 3px;
+  padding-left: 10px;
+  margin: 10px;
 }
 
 span{
@@ -330,7 +334,7 @@ h3, h4, h5 {
   align-items: flex-start;
 }
 
-.selected-outpost, .selected-station{
+.selected-outpost, .selected-station, .selected-city{
   font-size: 15px;
   margin-top: 10px;
   margin-bottom: 0px;
