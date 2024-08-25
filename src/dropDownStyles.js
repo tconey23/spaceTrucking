@@ -17,14 +17,17 @@ const customStyles = {
     menu: (provided) => ({
       ...provided,
       borderRadius: '10px',
+      fontSize: '10px'
     }),
     multiValue: (provided) => ({
       ...provided,
       backgroundColor: 'lightblue',
+      fontSize: '20px'
     }),
     multiValueLabel: (provided) => ({
       ...provided,
       color: 'black',
+      fontSize: '20px'
     }),
     multiValueRemove: (provided) => ({
       ...provided,

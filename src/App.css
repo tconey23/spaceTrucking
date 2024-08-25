@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap');
 @import "~@flaticon/flaticon-uicons/css/all/all";
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
 body{
   font-family: "Orbitron", sans-serif;
@@ -82,10 +83,16 @@ header{
   margin-top: 20px;
 
 .slick-slide{
-  background: rgba(50, 151, 245, 0.342);
+  background: black;
   text-align: center;
   font-size: large;
+  font-family: "Press Start 2P", system-ui;
   }
+}
+
+.acc-wrapper{
+  height: 70vh;
+  overflow: scroll;
 }
 
 .price-card{
@@ -94,7 +101,7 @@ header{
   border-radius: 15px;
   padding: 2px;
   background: #f0f8ff26;
-  color: darkorange;
+  color: greenyellow;
   filter: drop-shadow(1px 4px 6px black);
   mix-blend-mode: hard-light;
   font-weight: 500;
@@ -152,17 +159,83 @@ header{
   }
 }
 
-.slider-container{
-  max-width: 100vw;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    justify-content: space-evenly;
+.image-wrapper{
+  margin-top: 20px;
 }
 
-.slick-slider{
-  max-width: 85%;
-  font-size: 10px;
+
+
+.image-container{
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+.slider-wrapper{
+  width: 77% !important;
+  padding: 75px;
+  border-radius: 50px;
+  margin-top: 20px !important;
+  margin-bottom: 20px !important;
+}
+
+.carousel{
+  .dot{
+    display: none !important; 
+  }
+  li{
+    max-width: 100px;
+    padding: 20px;
+    box-shadow: inset;
+
+    p{
+      color: orange;
+      font-size: 20px;
+      height: 200px;
+      width: 600px;
+      position: absolute;
+      z-index: 5000;
+      transform: translateY(-100px);
+      opacity: 0;
+      transition: all 1s ease-in-out;
+    }
+    img{
+      max-width: 80%;
+      filter: blur(10px);
+      scale: 0.85;
+      transition: all 1s ease-in-out;
+      aspect-ratio: 16/9;
+      box-shadow: 1px 1px 20px black;
+    }
+  }
+
+  .selected{
+    z-index: 500;
+    position: absolute;
+    p{
+      opacity: 1;
+      transform: translateY(-90px);
+    }
+    img{
+      max-width: 80%;
+      filter: blur(0px);
+      border-radius: 20px;
+      scale: 1.2;
+      box-shadow: 1px 1px 20px black;
+    }
+  }
+}
+
+
+.main-page{
+  width: 95vw;
+  height: 90vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 .location-form{
@@ -243,10 +316,10 @@ main {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: flex-start;
   font-size: calc(10px + 2vmin);
   color: white;
+  align-items: center;
 }
 
 .splash-img-container{
@@ -264,8 +337,6 @@ main {
     object-fit: cover;
   }
 }
-
-
 
 .App-link {
   color: #61dafb;
@@ -349,6 +420,65 @@ h3, h4, h5 {
   }
 }
 
-.planet-image{
+.cargo-views{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
 
+.view-select{
+  margin: 24px;
+  width: 100vw;
+  height: 0.5em;
+  justify-content: flex-start;
+
+  .css-b62m3t-container{
+    margin-left: 200px
+  }
+}
+
+.location-select{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100vw;
+  p{
+    margin-top: -15px;
+    margin-bottom: 0px;
+  }
+}
+
+.accordion-wrapper{
+  width: 95vw;
+  height: 80vh;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  font-size: 20px;
+
+  .accordion__button{
+    border-radius: 30px;
+    margin-top: 10px;
+    box-shadow: 1px 2px 7px orange;
+  }
+
+  .system-panel{
+    margin-left: 100px;
+    .planet-panel{
+      margin-left: 100px;
+      .station-panel{
+        margin-left: 100px;
+        .loc-panel{
+          background: orange;
+          padding: 10px;
+        }
+        .scu-panel{
+          text-align-last: end;
+          margin-top: -15px;
+          margin-bottom: 30px;
+        }
+      }
+    }
+  }
 }

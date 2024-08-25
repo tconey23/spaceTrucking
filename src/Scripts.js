@@ -1,38 +1,26 @@
-import React from 'react'
-import { getData } from "./apiCalls";
 
-const Scripts = () => {
 
-const systems = 'https://uexcorp.space/api/2.0/star_systems'
-const orbits = 'https://uexcorp.space/api/2.0/orbits'
-const moons = 'https://uexcorp.space/api/2.0/moons'
-const planets = 'https://uexcorp.space/api/2.0/planets'
+const locationPath = 'https://sc-trade.tools/api/locations'
 
-const locationData = {
-    systems: '',
-    orbits: '',
-    moons: '',
-    stations: '',
-    planets: ''
-}
-
-const importData = () => {
- getData(systems).then(
-    data => {
-        locationData.systems = data.data
-        console.log(locationData.systems)
+const getLocData = () => {
+    
+    fetch('https://sc-trade.tools/api/locations', {
+        method: 'GET',  
+        mode: 'no-cors',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        },
+    })
+    .then(response => {
+        console.log(response);
+    })
+    .catch(error => console.error('Fetch error:', error));  
+        
     }
- )
 
+    getLocData('https://sc-trade.tools/api/locations')
+
+export {
+    getLocData
 }
-
-  return (
-    <div>
-      
-    </div>
-  )
-}
-
-export default Scripts
-
-

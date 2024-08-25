@@ -4,7 +4,10 @@ import { Routes, Route, NavLink } from 'react-router-dom';
 import MyCargo from './MyCargo';
 import { useEffect, useState } from 'react';
 import CargoRecord from './CargoRecord';
+import CargoViews from './CargoViews';
 import { getData } from './apiCalls';
+import Data from './Data';
+
 
 function App() {
 
@@ -14,7 +17,6 @@ function App() {
   const systemURL = 'https://uexcorp.space/api/2.0/star_systems'
 
   useEffect(() => {
-
 
     getData(systemURL).then(
       data => {
@@ -41,7 +43,7 @@ function App() {
 
       <Routes>
         <Route path='spacetrucking/Home' element={<Hauler />}/>
-        <Route path='spacetrucking/MyCargo' element={<MyCargo systems={systems}/>}/>
+        <Route path='spacetrucking/MyCargo' element={<CargoViews systems={systems}/>}/>
       </Routes>
     </main>
   );

@@ -10,6 +10,7 @@ const CargoRecord = ({ parentData}) => {
   const [commodity, setCommodity] = useState('');
   const [inventory, setInventory] = useState([]);
   
+  console.log(parentData)
 
   useEffect(() => {
     const records = JSON.parse(localStorage.getItem('cargo_records')) || [];

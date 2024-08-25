@@ -1,43 +1,50 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { getData } from './apiCalls';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import PriceObject from './PriceObject';
-import Scripts from './Scripts';
+
+import { Carousel } from 'react-responsive-carousel';
+import 'react-responsive-carousel/lib/styles/carousel.min.css';
 
 const Hauler = () => {
-  const [imageUrl, setImageUrl] = useState(null);
+  const [imageUrl, setImageUrl] = useState();
+  const[urlArray, setUrlArray] = useState([])
   const [intervalState, setIntervalState] = useState(null)
   const [allCommPrices, setAllCommPrices] = useState(0)
   const [priceObjects, setPriceObjects] = useState()
-  const [randomNumber, setRandomNumber] = useState(1)
+  const [randomNumber, setRandomNumber] = useState(Math.floor(Math.random() * (90 - 1 + 1)) + 1)
+  const [imageCount, setImageCount] = useState(3)
+  const [currentSlide, setCurrentSlide] = useState()
+  const carouselRef = useRef(null);
 
   const settings = {
     dots: false,
     infinite: true,
-    speed: 1000,
-    slidesToShow: 3,
-    slidesToScroll: 1,
+    speed: 1000000,
+    slidesToShow: 4,
+    slidesToScroll: allCommPrices.length /3,
     autoplay: true,
-    autoplaySpeed: 3000,
-    centerMode: true,
-    centerPadding: '50px'
+    autoplaySpeed: 0,
+    cssEase: 'linear',
+    rtl: false
 };
-  
-  const randomImage = `https://api.star-citizen.wiki/api/v2/galactapedia?page=${randomNumber}`;
+
   const commodities = 'https://uexcorp.space/api/2.0/commodities_prices_all'
 
   const getImage = () => {
-    getData(randomImage).then(data => {
-      const min = 0;
-      const max = data.data.length - 1;
-      const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
-      setImageUrl(data.data[randomNumber].thumbnail);
+     getData(`https://api.star-citizen.wiki/api/v2/galactapedia?page=${randomNumber}`).then(data => {
+      const newArray = data.data.map(url => ({
+        url: url.thumbnail,
+        desc: url.title
+      }));
+      setUrlArray(prevArray => [...prevArray, ...newArray]); // Append newArray to the existing array
     }).catch(error => {
       console.error('Error fetching data:', error);
     });
   };
+  
 
   const getCommodities = () => {
     getData(commodities).then(data => {
@@ -50,10 +57,12 @@ const Hauler = () => {
 
   const commObjects = () => {
 
+    console.log(allCommPrices.length)
+
     let array = []
 
-    allCommPrices.forEach((comm) => {
-      array.push(<PriceObject commodityObject={comm}></PriceObject>)
+    allCommPrices.forEach((comm, index) => {
+      array.push(<PriceObject key={index} commodityObject={comm}></PriceObject>)
     })
 
     setPriceObjects(array)
@@ -63,27 +72,46 @@ const Hauler = () => {
   useEffect(() => {
     const rand = Math.floor(Math.random() * (90 - 1 + 1)) + 1
     setRandomNumber(rand)
-
     getCommodities()
-    getImage();
-    const intervalID = setInterval(getImage, 5000);
-    setIntervalState(intervalID);
-
-    return () => {
-      clearInterval(intervalID);
-    };
+    getImage()
   }, []);
 
   useEffect(() => {
-    console.log(randomNumber)
     const rand = Math.floor(Math.random() * (90 - 1 + 1)) + 1
+    let array = []
     setRandomNumber(rand)
-  }, [imageUrl])
+  
+    urlArray.forEach((item, index) =>{
+      array.push(
+    <div key={index} className='image-container'>
+      <p className='image-title'>{item.desc}</p>
+      <img className="random-image" src={item.url}/>
+    </div>   
+    )
+    })
+
+    setImageUrl(array)
+  }, [urlArray])
 
   useEffect(() => {
     let exit
     allCommPrices ? commObjects() : exit = null
   }, [allCommPrices])
+
+  useEffect(() =>{
+    console.log(currentSlide, currentSlide % 14 == 0, urlArray.length)
+    let exit 
+    currentSlide % 14 == 0 ? getImage() : exit = null
+  }, [currentSlide])
+
+  useEffect(() => {
+    if (carouselRef.current) {
+      setTimeout(() => {
+        console.log('goto')
+        carouselRef.current.moveTo(1);
+      }, 500);
+    }
+  }, [carouselRef])
 
   return (
     <div className='main-page'>
@@ -92,10 +120,12 @@ const Hauler = () => {
           {priceObjects}
         </Slider>
       </div>
-      <div className='splash-img-container'>
-        {imageUrl && <img className="splash-image" src={imageUrl} alt="Random Star Citizen Image" />}
+      <div className='image-wrapper'>
+        <Carousel ref={carouselRef} onChange={(index) => setCurrentSlide(index)} stopOnHover={false} centerMode={true} autoPlay={true} interval={3000} transitionTime={1000} infiniteLoop={true} showThumbs={false} showArrows={true} centerSlidePercentage={60} showStatus={false}>
+          {imageUrl}
+        </Carousel>
       </div>
-      <Scripts/>
+      
     </div>
   );
 };
