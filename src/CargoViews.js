@@ -17,6 +17,7 @@ const CargoViews = ({systems}) => {
     ]
 
     const handleSelectView = (e) => {
+        console.log(e.value)
         setSelectedView(e.value)
     }
 

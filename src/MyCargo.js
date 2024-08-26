@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Accordion,
   AccordionItem,
@@ -11,7 +11,8 @@ import 'react-accessible-accordion/dist/fancy-example.css';
 import Planets from './Planets';
 
 const MyCargo = () => {
-  const [favSystems, setFavSystems] = useState([68]);
+  const [storedSystems, setStoredSystems] = useState();
+  const [favSystems, setFavSystems] = useState([]);
   const [systems, setSystems] = useState(null);
   const [selectedSystem, setSelectedSystem] = useState(null);
 
@@ -23,7 +24,31 @@ const MyCargo = () => {
       setSystems(res);
     };
     loadSystems();
+
+    let favs = localStorage.getItem('favorite_systems');
+
+    const setNewFavs = () => {
+      localStorage.setItem('favorite_systems', JSON.stringify([]));
+    };
+
+    const getFavs = () => {
+      let sfavs = JSON.parse(localStorage.getItem('favorite_systems') || '[]');
+      sfavs.length > 0 && setFavSystems(sfavs);
+    };
+
+    favs === null ? setNewFavs() : getFavs();
   }, []);
+
+  useEffect(() => {
+
+    const updateLocalFavs = () => {
+      localStorage.setItem('favorite_systems', JSON.stringify(favSystems))
+      console.log(favSystems)
+    }
+
+
+    updateLocalFavs ()
+  }, [favSystems])
 
   const getData = async (endpoint) => {
     try {
@@ -38,6 +63,18 @@ const MyCargo = () => {
 
   const handleSystemClick = (systemId) => {
     setSelectedSystem(systemId);
+  };
+
+  const handleFavs = async (event, type, sysId) => {
+    event.stopPropagation();
+    if (type === 'add') {
+      await setFavSystems((prev) => [...prev, sysId]);
+      console.log(favSystems)
+    } else {
+      let remFav = favSystems.filter((sys) => sys !== sysId);
+      console.log(sysId)
+      setFavSystems(remFav);
+    }
   };
 
   const sortedSystems = systems
@@ -55,9 +92,17 @@ const MyCargo = () => {
             <span>
               {system.name}
               {favSystems.includes(system.id) ? (
-                <i style={{ color: 'orange' }} className="fi fi-sr-star"></i>
+                <i
+                  style={{ color: 'orange', zIndex: 500, position: 'relative' }}
+                  className="fi fi-sr-star"
+                  onClick={(event) => handleFavs(event, 'rem', system.id)}
+                ></i>
               ) : (
-                <i style={{ color: 'black' }} className="fi fi-rr-star"></i>
+                <i
+                  style={{ color: 'black', zIndex: 500, position: 'relative' }}
+                  className="fi fi-rr-star"
+                  onClick={(event) => handleFavs(event, 'add', system.id)}
+                ></i>
               )}
             </span>
           </AccordionItemButton>
@@ -72,7 +117,10 @@ const MyCargo = () => {
         {systems && !selectedSystem && renderSystems()}
 
         {selectedSystem && (
-                <Planets setSelectedSystem={setSelectedSystem} system={systems.find((sys) => sys.id === selectedSystem)} />
+          <Planets
+            setSelectedSystem={setSelectedSystem}
+            system={systems.find((sys) => sys.id === selectedSystem)}
+          />
         )}
       </Accordion>
     </div>

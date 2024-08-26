@@ -47,7 +47,7 @@ const customStyles = {
       ...provided,
       backgroundColor: state.isSelected ? 'lightblue' : 'white',
       color: state.isSelected ? 'black' : 'black',
-      padding: 10,
+      padding: 15,
       '&:hover': {
         backgroundColor: 'lightgray',
       },
@@ -61,15 +61,17 @@ const customStyles = {
       marginBottom: '-20px',
       marginTop: '-20px',
       marginLeft: '-84px',
-      overflowY: 'scroll',
       maxHeight: '30px',
-      maxWidth: '800px'
+      maxWidth: '800px',
+      padding: 10,
     }),
     menu: (provided) => ({
       ...provided,
       borderRadius: '10px',
-      fontSize: '15px',
-      scale: '70%',
+      fontSize: '13px',
+      scale: '80%',
+      zIndex: '50000',
+      padding: '5px'
     }),
     multiValue: (provided) => ({
       ...provided,

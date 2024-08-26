@@ -74,7 +74,7 @@ const Orbits = ({planet, system}) => {
     }, [selectedPlanet])
 
   return (
-    <Accordion allowMultipleExpanded allowZeroExpanded preExpanded={['selectedPlanet', 'selectedSystem']}>
+    <Accordion className='orbit-accordion' allowMultipleExpanded allowZeroExpanded preExpanded={['selectedPlanet', 'selectedSystem']}>
       {orbits && !selectedOrbit && orbits.map((orbit) => (
         <AccordionItem key={orbit.id} onClick={() => orbitSelected(orbit)}>
           <AccordionItemHeading>

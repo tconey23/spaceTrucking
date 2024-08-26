@@ -64,9 +64,42 @@ header{
 .fi{
   color: white;
   transition: all 0.5s ease-in-out;
+  z-index: 5000;
   &:hover{
     color: orange;
     cursor: pointer;
+  }
+}
+
+.fi-sr-star{
+  &:hover{
+    scale: 1.2;
+    &::after{
+      position: absolute;
+      content: 'remove favorite';
+      font-size: 8px;
+      font-weight: bold;
+      color: black;
+      margin-top: 30px;
+      margin-left: -55px;
+      text-wrap: nowrap;
+    }
+  }
+}
+
+.fi-rr-star{
+  &:hover{
+    scale: 1.2;
+    &::after{
+      position: absolute;
+      content: 'add favorite';
+      font-size: 8px;
+      font-weight: bold;
+      color: black;
+      margin-top: 30px;
+      margin-left: -40px;
+      text-wrap: nowrap;
+    }
   }
 }
 
@@ -124,11 +157,13 @@ header{
 
 .cargo-record{
   border: 1px solid white;
-  width: 80vw;
+  margin-top: 20px;
+  width: 88vw;
   display: flex;
   flex-direction: column;
   font-size: 15px;
   align-items: flex-start;
+  padding: 15px;
 }
 
 .commodity-table{
@@ -137,9 +172,11 @@ header{
   margin: 5px;
   tr{
     text-align: left;
+    justify-content: center;
   }
   .comm-row{
     width: 50%;
+
   }
   .scu-row{
     width: 25%;
@@ -147,6 +184,7 @@ header{
   .comm-edit{
     width: 25%;
   }
+
 }
 
 .commodity-form{
@@ -485,7 +523,8 @@ h3, h4, h5 {
 
 .acc-wrapper{
   height: 70vh;
-  overflow: scroll;
+  overflow-y: scroll;
+  overflow-x: hidden;
   width: 94vw;
   display: flex;
   flex-direction: column;
@@ -496,18 +535,48 @@ h3, h4, h5 {
     flex-direction: row;
     flex-wrap: nowrap;
     align-items: center;
-    justify-content: space-between;
-    width: 100%
+    justify-content: flex-start;
+    width: 100vw;
+    transition: all 5s ease-in-out;
+  }
+  .accordion{
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 2px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    margin-left: -2px;
+    width: 90vw;
+    transition: all 1s ease-in-out;
   }
   .accordion__panel{
     font-size: 15px;
     width: 100%;
   }
+
+  .orbit-accordion{
+    margin-top: -19px;
+    margin-left: -18px;
+
+    .accordion__panel {
+      font-size: 15px;
+      width: 90vw;
+      margin-top: -20px;
+
+      .accordion__item{
+        width: 90vw;
+      }
+  }
+  }
 }
 
 .return-button{
-  width: 37%;
+  width: 100%;
   height: 7%;
   position: absolute;
   opacity: 0;
+  &:hover{
+    cursor: pointer;
+  }
 }

@@ -42,6 +42,7 @@ function App() {
       </header>
 
       <Routes>
+        <Route path='' element={<Hauler />}/> 
         <Route path='spacetrucking/Home' element={<Hauler />}/>
         <Route path='spacetrucking/MyCargo' element={<CargoViews systems={systems}/>}/>
       </Routes>
