@@ -13,16 +13,19 @@ const customStyles = {
       backgroundColor: 'lightgray',
       borderRadius: '10px',
       border: '1px solid black',
+      width: '50px'
     }),
     menu: (provided) => ({
       ...provided,
       borderRadius: '10px',
-      fontSize: '10px'
+      fontSize: '10px',
+      width: '50px'
     }),
     multiValue: (provided) => ({
       ...provided,
       backgroundColor: 'lightblue',
-      fontSize: '20px'
+      fontSize: '20px',
+      width: '50px'
     }),
     multiValueLabel: (provided) => ({
       ...provided,

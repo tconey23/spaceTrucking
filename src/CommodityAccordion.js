@@ -3,10 +3,9 @@ import { Accordion, AccordionItem, AccordionItemHeading, AccordionItemButton, Ac
 
 
 const CommodityAccordion = ({ inventory }) => {
-
     const groupBySystemAndPlanet = (locations) => {
         const grouped = {};
-    
+        console.log(locations)
         if (Array.isArray(locations)) {
             locations.forEach((location) => {
                 const { system, planet, station, scu } = location;

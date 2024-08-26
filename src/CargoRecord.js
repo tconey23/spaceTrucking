@@ -2,31 +2,31 @@ import React, { useState, useEffect } from 'react';
 import Commodities from './Commodities';
 import commData from '../src/mockCommodityData.json';
 
-const CargoRecord = ({ parentData}) => {
+const CargoRecord = ({ planet, system, orbit, station}) => {
   const [storedCargo, setStoredCargo] = useState([]);
   const [addCargoItem, setAddCargoItem] = useState(false);
   const [commsList, setCommsList] = useState([]);
   const [scuValue, setScuValue] = useState(0);
   const [commodity, setCommodity] = useState('');
   const [inventory, setInventory] = useState([]);
-  
-  console.log(parentData)
 
   useEffect(() => {
     const records = JSON.parse(localStorage.getItem('cargo_records')) || [];
     setStoredCargo(records);
+    console.log(records)
 
     const matchedInventory = records.find(
       (rec) =>
-        rec.parentData.moonOrOrbit.label === parentData.moonOrOrbit.label &&
-        rec.parentData.planet.label === parentData.planet.label &&
-        rec.parentData.system.name === parentData.system.name
+        rec.orbit.name === orbit.name &&
+        rec.planet.name === planet.name &&
+        rec.system.name === system.name
     );
 
     if (matchedInventory) {
       setInventory(matchedInventory.cargo);
     }
-  }, [parentData]);
+    console.log(system, planet, orbit, station)
+  }, [system, planet, orbit, station]);
 
   useEffect(() => {
     if (commData && commData.data) {
@@ -58,31 +58,31 @@ const CargoRecord = ({ parentData}) => {
       // Adding a new commodity
       const newCargoItem = { id: Date.now(), commodity, scu: scuValue };
   
-      newCargoList = storedCargo.map(record => {
+      newCargoList = storedCargo.map(rec => {
         if (
-          record.parentData.moonOrOrbit.label === parentData.moonOrOrbit.label &&
-          record.parentData.planet.label === parentData.planet.label &&
-          record.parentData.system.name === parentData.system.name
+          rec.orbit.name === orbit.name &&
+          rec.planet.name === planet.name &&
+          rec.system.name === system.name
         ) {
           return {
-            ...record,
-            cargo: [...(record.cargo || []), newCargoItem] // Add new cargo item with ID
+            ...rec,
+            cargo: [...(rec.cargo || []), newCargoItem] // Add new cargo item with ID
           };
         }
-        return record;
+        return rec;
       });
   
       const recordExists = newCargoList.some(
-        record =>
-          record.parentData.moonOrOrbit.label === parentData.moonOrOrbit.label &&
-          record.parentData.planet.label === parentData.planet.label &&
-          record.parentData.system.name === parentData.system.name
+        rec =>
+          rec.orbit.name === orbit.name &&
+        rec.planet.name === planet.name &&
+        rec.system.name === system.name
       );
   
       if (!recordExists) {
         newCargoList = [
           ...newCargoList,
-          { id: Date.now(), parentData, cargo: [newCargoItem] },
+          { id: Date.now(), system, planet, orbit, station, cargo: [newCargoItem] },
         ];
       }
   
@@ -106,16 +106,16 @@ const CargoRecord = ({ parentData}) => {
   
     } else if (type === 'delete') {
       // Deleting an existing commodity by ID
-      newCargoList = storedCargo.map(record => {
+      newCargoList = storedCargo.map(rec => {
         if (
-          record.parentData.moonOrOrbit.label === parentData.moonOrOrbit.label &&
-          record.parentData.planet.label === parentData.planet.label &&
-          record.parentData.system.name === parentData.system.name
+          rec.orbit.name === orbit.name &&
+          rec.planet.name === planet.name &&
+          rec.system.name === system.name
         ) {
-          const updatedCargo = record.cargo.filter(item => item.id !== parseInt(id))
-          return { ...record, cargo: updatedCargo };
+          const updatedCargo = rec.cargo.filter(item => item.id !== parseInt(id))
+          return { ...rec, cargo: updatedCargo };
         }
-        return record;
+        return rec;
       });
   
       setInventory(prevInventory => prevInventory.filter(item => item.id !== parseInt(id)))
@@ -136,9 +136,9 @@ const CargoRecord = ({ parentData}) => {
 
   return (
     <div className='cargo-record'>
-      <h3>{parentData.system.name}</h3>
-      <h4>{parentData.planet.label}</h4>
-      <h5>{parentData.moonOrOrbit.label}</h5>
+      <h3>{system.name}</h3>
+      <h4>{planet.name}</h4>
+      <h5>{orbit.name}</h5>
 
       <span>
         <p>Add Cargo</p>
@@ -168,7 +168,7 @@ const CargoRecord = ({ parentData}) => {
         </>
       )}
       {inventory.map((inv) => (
-        <Commodities key={inv.id} commodity={inv.commodity} scu={inv.scu} recordData={parentData} inv={inv} commsList={commsList} scuValue={inv.scu} setScuValue={setScuValue} setCommodity={setCommodity} addCommodity={addCommodity}/>
+        <Commodities key={inv.id} commodity={inv.commodity} scu={inv.scu} recordData={[system, planet, orbit, station]} inv={inv} commsList={commsList} scuValue={inv.scu} setScuValue={setScuValue} setCommodity={setCommodity} addCommodity={addCommodity}/>
       ))}
     </div>
   );

@@ -8,7 +8,7 @@ import MyCommodities from './MyCommodities';
 
 const CargoViews = ({systems}) => {
     const [viewType, setViewType] = useState()
-    const [selectedView, setSelectedView] = useState()
+    const [selectedView, setSelectedView] = useState('locations')
 
     const pageOptions = [
         {value: 'locations', label: 'Locations'},
