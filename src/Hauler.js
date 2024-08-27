@@ -33,11 +33,14 @@ const Hauler = () => {
 
   const commodities = 'https://uexcorp.space/api/2.0/commodities_prices_all'
 
+  const fleetYardsImages = `https://api.fleetyards.net/v1/images/random?limit=15`
+  const wikiImages = `https://api.star-citizen.wiki/api/v2/galactapedia?page=${randomNumber}`
+
   const getImage = () => {
-     getData(`https://api.star-citizen.wiki/api/v2/galactapedia?page=${randomNumber}`).then(data => {
-      const newArray = data.data.map(url => ({
-        url: url.thumbnail,
-        desc: url.title
+     getData(fleetYardsImages).then(data => {
+      const newArray = data.map(url => ({
+        url: url.bigUrl,
+        desc: url.gallery.name
       }));
       setUrlArray(prevArray => [...prevArray, ...newArray]); // Append newArray to the existing array
     }).catch(error => {

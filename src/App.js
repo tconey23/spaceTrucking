@@ -7,6 +7,7 @@ import CargoRecord from './CargoRecord';
 import CargoViews from './CargoViews';
 import { getData } from './apiCalls';
 import Data from './Data';
+import Fleet from './Fleet';
 
 
 function App() {
@@ -34,6 +35,7 @@ function App() {
         <div className='link-container'>
           <NavLink to='spaceTrucking/Home'>Home</NavLink>
           <NavLink to='spaceTrucking/MyCargo'>My Cargo</NavLink>
+          <NavLink to='spaceTrucking/MyFleet'>My Fleet</NavLink>
         </div>
         <h1 className='site-name'>Space Trucking</h1>
         <div className='header-spacer'>
@@ -45,6 +47,7 @@ function App() {
         <Route path='' element={<Hauler />}/> 
         <Route path='spacetrucking/Home' element={<Hauler />}/>
         <Route path='spacetrucking/MyCargo' element={<CargoViews systems={systems}/>}/>
+        <Route path='spacetrucking/MyFleet' element={<Fleet />}/>
       </Routes>
     </main>
   );
