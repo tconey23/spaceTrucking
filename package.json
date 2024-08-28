@@ -5,10 +5,11 @@
   "dependencies": {
     "@flaticon/flaticon-uicons": "^3.3.1",
     "@react-three/drei": "^9.111.0",
-    "@react-three/fiber": "^8.17.5",
+    "@react-three/fiber": "^8.17.6",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "cors-anywhere": "^0.4.4",
     "react": "^18.3.1",
     "react-accessible-accordion": "^5.0.0",
     "react-dom": "^18.3.1",
@@ -20,13 +21,15 @@
     "react-spring": "^9.7.4",
     "slick-carousel": "^1.8.1",
     "swiper": "^11.1.10",
+    "three": "^0.167.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "start-cors": "node start-cors-anywhere.js"
   },
   "eslintConfig": {
     "extends": [

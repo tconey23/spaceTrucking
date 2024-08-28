@@ -376,86 +376,14 @@ main {
   }
 }
 
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 h3, h4, h5 {
   margin-top: -1px;
   height: 10px;
 }
 
-.systems-list{
-  width: 95vw;
-  height: 85vh;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  overflow-y:scroll
-}
-
-.system-details{
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  margin-left: 50px;
-}
-
-.selected-system{
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-
-
-.selected-planet{
-  font-size: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-.planet-details{
-  margin-left: 50px;
-  background-size: cover;
-  width: 88vw;
-}
-
 .fi{
   margin-left: 10px;
   margin-right: 10px;
-}
-
-.selected-moon, .selected-orbit{
-  font-size: 15px;
-  margin-top: 10px;
-  margin-bottom: 0px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-.selected-outpost, .selected-station, .selected-city{
-  font-size: 15px;
-  margin-top: 10px;
-  margin-bottom: 0px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  margin-left: 50px;
-  p{
-    font-size: 15px;
-  }
 }
 
 .cargo-views{
@@ -476,107 +404,4 @@ h3, h4, h5 {
   }
 }
 
-.location-select{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100vw;
-  p{
-    margin-top: -15px;
-    margin-bottom: 0px;
-  }
-}
 
-.accordion-wrapper{
-  width: 95vw;
-  height: 80vh;
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  font-size: 20px;
-
-  .accordion__button{
-    border-radius: 30px;
-    margin-top: 10px;
-    box-shadow: 1px 2px 7px orange;
-  }
-
-  .system-panel{
-    margin-left: 100px;
-    .planet-panel{
-      margin-left: 100px;
-      .station-panel{
-        margin-left: 100px;
-        .loc-panel{
-          background: orange;
-          padding: 10px;
-        }
-        .scu-panel{
-          text-align-last: end;
-          margin-top: -15px;
-          margin-bottom: 30px;
-        }
-      }
-    }
-  }
-}
-
-.acc-wrapper{
-  height: 70vh;
-  overflow-y: scroll;
-  overflow-x: hidden;
-  width: 94vw;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  flex-wrap: wrap;
-  .accordion__heading, .accordion__button{
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    align-items: center;
-    justify-content: flex-start;
-    width: 100vw;
-    transition: all 5s ease-in-out;
-  }
-  .accordion{
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    border-radius: 2px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
-    margin-left: -2px;
-    width: 90vw;
-    transition: all 1s ease-in-out;
-  }
-  .accordion__panel{
-    font-size: 15px;
-    width: 100%;
-  }
-
-  .orbit-accordion{
-    margin-top: -19px;
-    margin-left: -18px;
-
-    .accordion__panel {
-      font-size: 15px;
-      width: 90vw;
-      margin-top: -20px;
-
-      .accordion__item{
-        width: 90vw;
-      }
-  }
-  }
-}
-
-.return-button{
-  width: 100%;
-  height: 7%;
-  position: absolute;
-  opacity: 0;
-  &:hover{
-    cursor: pointer;
-  }
-}

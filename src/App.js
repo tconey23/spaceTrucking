@@ -22,7 +22,7 @@ function App() {
     getData(systemURL).then(
       data => {
         let array = []
-        data.data.forEach((sys) => {array.push({name: sys.name, id: sys.id})})
+        data && data.data.forEach((sys) => {array.push({name: sys.name, id: sys.id})})
         setSystems(array)
       }
     )

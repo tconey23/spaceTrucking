@@ -113,7 +113,7 @@ const MyCargo = () => {
 
   return (
     <div className="acc-wrapper">
-      <Accordion allowMultipleExpanded>
+      <Accordion id='cargoAccordion' allowMultipleExpanded>
         {systems && !selectedSystem && renderSystems()}
 
         {selectedSystem && (
