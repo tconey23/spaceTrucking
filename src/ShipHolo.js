@@ -49,7 +49,7 @@ const ShipHolo = ({ shipUrl }) => {
     const controlsRef = useRef();
     const suspenseRef = useRef()
     const [environment, setEnvironment] = useState()
-    const [devOrProd, setDevOrProd] = useState()
+    const [devOrProd, setDevOrProd] = useState('')
 
     const newMaterial = new THREE.MeshPhysicalMaterial({
         color: '#00a2ff',
@@ -78,13 +78,14 @@ const ShipHolo = ({ shipUrl }) => {
 
 
     useEffect(() => {
-        if (shipUrl && devOrProd) {
+        if (shipUrl && window.location.hostname) {
+            console.log(window.location.hostname)
             const fetchGltf = async () => {
                 try {
-                    const response = await fetch(`${devOrProd}fetch-gltf?url=${encodeURIComponent(shipUrl)}`);
+                    const response = await fetch(`${window.location.hostname}fetch-gltf?url=${encodeURIComponent(shipUrl)}`);
                     if (response.ok) {
                         const filename = new URL(shipUrl).pathname.split('/').pop();
-                        setHoloUrl(`${devOrProd}downloads/${filename}`);
+                        setHoloUrl(`${window.location.hostname}downloads/${filename}`);
                     } else {
                         console.error('Failed to fetch GLTF:', response.statusText);
                     }
@@ -100,7 +101,7 @@ const ShipHolo = ({ shipUrl }) => {
     
     const emptyDownloadsFolder = async () => {
         try {
-            const response = await fetch(`${devOrProd}empty-downloads`, {
+            const response = await fetch(`${window.location.hostname}empty-downloads`, {
                 method: 'DELETE',
             });
     
