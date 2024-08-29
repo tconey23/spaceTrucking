@@ -45,8 +45,8 @@ function App() {
       </header>
 
       <Routes>
-        <Route path='' element={<HoloTest />}/> 
-        <Route path='spacetrucking/Home' element={<HoloTest />}/>
+        <Route path='' element={<Hauler />}/> 
+        <Route path='spacetrucking/Home' element={<Hauler />}/>
         <Route path='spacetrucking/MyCargo' element={<CargoViews systems={systems}/>}/>
         <Route path='spacetrucking/MyFleet' element={<Fleet />}/>
       </Routes>

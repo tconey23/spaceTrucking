@@ -1,6 +1,6 @@
 import React, { useState, Suspense, useEffect, useRef } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, useGLTF, Html, Sphere, PerspectiveCamera, OrthographicCamera} from '@react-three/drei';
+import { OrbitControls, useGLTF, Html, Sphere, PerspectiveCamera, OrthographicCamera, Wireframe} from '@react-three/drei';
 import { useThree } from '@react-three/fiber';
 import { useFrame } from '@react-three/fiber';
 
