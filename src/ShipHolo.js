@@ -2,11 +2,12 @@ import React, { useState, Suspense, useEffect, useRef } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, useGLTF, Html, Sphere, PerspectiveCamera, OrthographicCamera} from '@react-three/drei';
 import { useThree } from '@react-three/fiber';
+import { useFrame } from '@react-three/fiber';
 
 function Model({ url, position, cameraPosition, zoom, color = 'orange', materialProps = {} }) {
     const { camera } = useThree()
     const { scene, materials, nodes } = useGLTF(url);
-
+    const holoRef = useRef()
     useEffect(() => {
         if (cameraPosition || camera.zoom) {
             camera.position.set(...cameraPosition);
@@ -15,7 +16,7 @@ function Model({ url, position, cameraPosition, zoom, color = 'orange', material
               
         camera.updateProjectionMatrix();
 
-        console.log("Camera position:", camera.position, "Camera zoom:", camera.zoom)
+        // console.log("Camera position:", camera.position, "Camera zoom:", camera.zoom)
         return () => {
         };
     }, [cameraPosition, camera, scene, materials, nodes]);
@@ -66,12 +67,22 @@ function Model({ url, position, cameraPosition, zoom, color = 'orange', material
         });
     }, [scene, color, materialProps]);
 
-    return <primitive object={scene} position={position} />;
+    useFrame(() => {
+        if (holoRef.current) {
+            // Incrementally update the rotation on each frame
+            holoRef.current.rotation.y -= 0.005; 
+            // holoRef.current.rotation.x += 0.005; 
+            // holoRef.current.rotation.z += 0.003; 
+        }
+    });
+
+    return <primitive ref={holoRef} object={scene} position={position} />;
 }
 
 const ShipHolo = ({ shipUrl }) => {
     const [holoUrl, setHoloUrl] = useState(null);
     const controlsRef = useRef();
+    
     useEffect(() => {
         if (shipUrl) {
             const fetchGltf = async () => {
@@ -92,6 +103,8 @@ const ShipHolo = ({ shipUrl }) => {
         }
     }, [shipUrl]);
 
+
+
     return (
         <div className='canvas-test-wrapper'>
             <Canvas style={{ width: '50%', height: '50%', background: 'black' }} >
@@ -99,7 +112,7 @@ const ShipHolo = ({ shipUrl }) => {
                 <directionalLight intensity={50} position={[10, 10, 10]} color={'blue'}/>
                 {holoUrl && (
                     <Suspense fallback={<Html>Loading...</Html>}>
-                        <mesh>
+                        <mesh >
                             <Model  zoom={5.403600876626375} cameraPosition={[-217.72807196061004, 109.15011821192999, 195.9202756077539]} position={[0,0,0]} url={holoUrl} color={'blue'}/>
                             <meshLambertMaterial color={'blue'}/>
                         </mesh>
@@ -111,8 +124,8 @@ const ShipHolo = ({ shipUrl }) => {
                 onChange={(e) => {
 
                   const camera = e.target.object;
-                  console.log('Camera position:', [...camera.position])
-                  console.log('Camera zoom:', camera.zoom);
+                //   console.log('Camera position:', [...camera.position])
+                //   console.log('Camera zoom:', camera.zoom);
                 }}
                 />
             </Canvas>
