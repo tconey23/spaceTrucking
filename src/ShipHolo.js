@@ -82,10 +82,10 @@ const ShipHolo = ({ shipUrl }) => {
             console.log(window.location.hostname)
             const fetchGltf = async () => {
                 try {
-                    const response = await fetch(`${window.location.hostname}fetch-gltf?url=${encodeURIComponent(shipUrl)}`);
+                    const response = await fetch(`${window.location.hostname}/fetch-gltf?url=${encodeURIComponent(shipUrl)}`);
                     if (response.ok) {
                         const filename = new URL(shipUrl).pathname.split('/').pop();
-                        setHoloUrl(`${window.location.hostname}downloads/${filename}`);
+                        setHoloUrl(`${window.location.hostname}/downloads/${filename}`);
                     } else {
                         console.error('Failed to fetch GLTF:', response.statusText);
                     }
@@ -101,7 +101,7 @@ const ShipHolo = ({ shipUrl }) => {
     
     const emptyDownloadsFolder = async () => {
         try {
-            const response = await fetch(`${window.location.hostname}empty-downloads`, {
+            const response = await fetch(`${window.location.hostname}/empty-downloads`, {
                 method: 'DELETE',
             });
     
