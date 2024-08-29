@@ -46,7 +46,7 @@ const Planets = ({ system, setSelectedSystem }) => {
         <AccordionItem uuid="selectedSystem">
             <AccordionItemButton>
                 {system.name}
-                <button className='return-button' onClick={() => setSelectedSystem('')}>X</button>
+                <i class="fi fi-sr-undo return-button" onClick={() => setSelectedSystem('')}></i>
               </AccordionItemButton>
             </AccordionItem>
       {planets.length > 0 && !selectedPlanet && planets.map((planet) => (
@@ -68,7 +68,7 @@ const Planets = ({ system, setSelectedSystem }) => {
             <AccordionItemHeading>
               <AccordionItemButton>
                 {selectedPlanet.name}
-                <button className='return-button' onClick={() => setSelectedPlanet('')}>X</button>
+                <i class="fi fi-sr-undo return-button" onClick={() => setSelectedSystem('')}></i>
               </AccordionItemButton>
             </AccordionItemHeading>
             <AccordionItemPanel>

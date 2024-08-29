@@ -5,7 +5,7 @@ const path = require('path');
 const cors = require('cors'); // Import cors
 
 const app = express();
-const PORT = 5000;
+const PORT = 5001;
 
 // Use CORS to allow requests from localhost:3000
 app.use(cors({
@@ -17,7 +17,6 @@ app.use('/downloads', express.static(path.join(__dirname, 'downloads')));
 
 app.get('/fetch-gltf', async (req, res) => {
     const { url } = req.query;
-
     if (!url) {
         return res.status(400).send('No URL provided.');
     }
@@ -54,6 +53,38 @@ app.get('/fetch-gltf', async (req, res) => {
         console.error('Error fetching the GLTF file:', error);
         return res.status(500).send('Error fetching the GLTF file.');
     }
+});
+
+app.delete('/empty-downloads', (req, res) => {
+    const downloadsPath = path.join(__dirname, 'downloads');
+
+    // Read the contents of the downloads folder
+    fs.readdir(downloadsPath, (err, files) => {
+        if (err) {
+            console.error('Error reading the downloads folder:', err);
+            return res.status(500).send('Error reading the downloads folder.');
+        }
+
+        // If there are no files, respond accordingly
+        if (files.length === 0) {
+            return res.send('The downloads folder is already empty.');
+        }
+
+        // Loop through the files and delete each one
+        files.forEach((file) => {
+            console.log(file)
+            const filePath = path.join(downloadsPath, file);
+            fs.unlink(filePath, (err) => {
+                if (err) {
+                    console.error(`Error deleting file ${file}:`, err);
+                } else {
+                    console.log(`File ${file} deleted successfully.`);
+                }
+            });
+        });
+
+        res.send('All files in the downloads folder have been deleted.');
+    });
 });
 
 app.listen(PORT, () => {

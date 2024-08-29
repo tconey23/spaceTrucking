@@ -80,7 +80,7 @@ const Orbits = ({planet, system}) => {
           <AccordionItemHeading>
             <AccordionItemButton>
               {orbit.name}
-              <button className='return-button' onClick={() => setSelectedOrbit('')}>X</button>
+              <i class="fi fi-sr-undo return-button" onClick={() => setSelectedSystem('')}></i>
             </AccordionItemButton>
           </AccordionItemHeading>
         </AccordionItem>
@@ -91,7 +91,7 @@ const Orbits = ({planet, system}) => {
                 <AccordionItemHeading>
                     <AccordionItemButton>
                         {selectedOrbit.name}
-                        <button className='return-button' onClick={() => setSelectedOrbit('')}>X</button>
+                        <i class="fi fi-sr-undo return-button" onClick={() => setSelectedSystem('')}></i>
                     </AccordionItemButton>
                 </AccordionItemHeading>
             </AccordionItem>

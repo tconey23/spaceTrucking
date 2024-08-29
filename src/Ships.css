@@ -12,7 +12,7 @@
     .accordion__button{
         display: flex;
         flex-direction: row;
-        height: 25px;
+        height: 5px;
     }
 
     .accordion__panel{
@@ -119,11 +119,15 @@ animation: nameGradient 0.5s ease-in 5.5s forwards
 
 
 .man-logo{
-    height: 80px;
+    height: 120px;
     padding: 0px;
     margin-top: 5px;
     opacity: 0;
-    animation: nameGradient 0.5s ease-in 5.5s forwards
+    animation: nameGradient 0.5s ease-in 5.5s forwards;
+    position: relative;
+    top: -18px;
+    left: 595px;
+    filter: brightness(4);
 }
 
 .ship-section {

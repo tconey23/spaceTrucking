@@ -1,8 +1,9 @@
 import React, { useState, Suspense, useEffect, useRef } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, useGLTF, Html, Sphere, PerspectiveCamera, OrthographicCamera, Wireframe} from '@react-three/drei';
+import { OrbitControls, useGLTF, Html, Sphere, PerspectiveCamera, OrthographicCamera, Wireframe, Caustics} from '@react-three/drei';
 import { useThree } from '@react-three/fiber';
 import { useFrame } from '@react-three/fiber';
+import * as THREE from 'three';
 
 function Model({ url, position, cameraPosition, zoom, color = 'orange', materialProps = {} }) {
     const { camera } = useThree()
@@ -20,42 +21,6 @@ function Model({ url, position, cameraPosition, zoom, color = 'orange', material
         return () => {
         };
     }, [cameraPosition, camera, scene, materials, nodes]);
-    useEffect(() => {
-        return () => {
-            Object.values(nodes).forEach((node) => {
-                if (node.geometry) node.geometry.dispose();
-            });
-
-            Object.values(materials).forEach((material) => {
-                if (material.map) material.map.dispose();
-                if (material.lightMap) material.lightMap.dispose();
-                if (material.aoMap) material.aoMap.dispose();
-                if (material.emissiveMap) material.emissiveMap.dispose();
-                if (material.bumpMap) material.bumpMap.dispose();
-                if (material.normalMap) material.normalMap.dispose();
-                if (material.displacementMap) material.displacementMap.dispose();
-                if (material.roughnessMap) material.roughnessMap.dispose();
-                if (material.metalnessMap) material.metalnessMap.dispose();
-                if (material.alphaMap) material.alphaMap.dispose();
-                if (material.envMap) material.envMap.dispose();
-                material.dispose();
-            });
-
-            scene.traverse((child) => {
-                if (child.isMesh) {
-                    child.geometry.dispose();
-
-                    if (child.material.isMaterial) {
-                        if (Array.isArray(child.material)) {
-                            child.material.forEach((material) => material.dispose());
-                        } else {
-                            child.material.dispose();
-                        }
-                    }
-                }
-            });
-        };
-    }, [scene, materials, nodes]);
 
     useEffect(() => {
         scene.traverse((child) => {
@@ -82,15 +47,20 @@ function Model({ url, position, cameraPosition, zoom, color = 'orange', material
 const ShipHolo = ({ shipUrl }) => {
     const [holoUrl, setHoloUrl] = useState(null);
     const controlsRef = useRef();
+    const suspenseRef = useRef()
+
+    const newMaterial = new THREE.MeshPhysicalMaterial({
+        color: '#00a2ff',
+    });
     
     useEffect(() => {
         if (shipUrl) {
             const fetchGltf = async () => {
                 try {
-                    const response = await fetch(`http://localhost:5000/fetch-gltf?url=${encodeURIComponent(shipUrl)}`);
+                    const response = await fetch(`http://localhost:5001/fetch-gltf?url=${encodeURIComponent(shipUrl)}`);
                     if (response.ok) {
                         const filename = new URL(shipUrl).pathname.split('/').pop();
-                        setHoloUrl(`http://localhost:5000/downloads/${filename}`);
+                        setHoloUrl(`http://localhost:5001/downloads/${filename}`);
                     } else {
                         console.error('Failed to fetch GLTF:', response.statusText);
                     }
@@ -101,21 +71,53 @@ const ShipHolo = ({ shipUrl }) => {
 
             fetchGltf();
         }
+
     }, [shipUrl]);
+    
+    const emptyDownloadsFolder = async () => {
+        try {
+            const response = await fetch(`http://localhost:5001/empty-downloads`, {
+                method: 'DELETE',
+            });
+    
+            if (response.ok) {
+                console.log('Downloads folder emptied successfully.');
+            } else {
+                console.error('Failed to empty downloads folder:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error emptying downloads folder:', error);
+        }
+    };
+    useEffect(() => {
+        
+
+        return () => {
+            emptyDownloadsFolder()
+        }
+    }, []);
+
 
 
 
     return (
         <div className='canvas-test-wrapper'>
-            <Canvas style={{ width: '50%', height: '50%', background: 'black' }} >
-                <ambientLight intensity={1} color={'blue'}/>
-                <directionalLight intensity={50} position={[10, 10, 10]} color={'blue'}/>
+            <Canvas ref={suspenseRef} style={{ width: '50%', height: '50%', background: 'black' }} >
+                <directionalLight intensity={100} position={[10, 10, 10]} color={'#00a2ff'}/>
                 {holoUrl && (
-                    <Suspense fallback={<Html>Loading...</Html>}>
-                        <mesh >
-                            <Model  zoom={5.403600876626375} cameraPosition={[-217.72807196061004, 109.15011821192999, 195.9202756077539]} position={[0,0,0]} url={holoUrl} color={'blue'}/>
-                            <meshLambertMaterial color={'blue'}/>
-                        </mesh>
+                    <Suspense 
+                    onChange={() => console.log('model change')}
+                    fallback={<Html>Loading...</Html>}>
+
+                            <Model  
+                                
+                                zoom={5.403600876626375} 
+                                cameraPosition={[-217.72807196061004, 109.15011821192999, 195.9202756077539]} 
+                                position={[0,0,0]} 
+                                url={holoUrl} 
+                                newMaterial={newMaterial}
+                                onChange={() => console.log('model change')}
+                            />
                     </Suspense>
                 )}
                 <OrthographicCamera/>

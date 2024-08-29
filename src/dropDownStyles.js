@@ -6,6 +6,7 @@ const customStyles = {
       padding: 10,
       '&:hover': {
         backgroundColor: 'lightgray',
+        width: '80px'
       },
     }),
     control: (provided) => ({
@@ -13,13 +14,13 @@ const customStyles = {
       backgroundColor: 'lightgray',
       borderRadius: '10px',
       border: '1px solid black',
-      width: '50px'
+      width: '80px'
     }),
     menu: (provided) => ({
       ...provided,
       borderRadius: '10px',
       fontSize: '10px',
-      width: '50px'
+      width: '80px'
     }),
     multiValue: (provided) => ({
       ...provided,
@@ -71,7 +72,7 @@ const customStyles = {
       fontSize: '13px',
       scale: '80%',
       zIndex: '50000',
-      padding: '5px'
+      padding: '10px'
     }),
     multiValue: (provided) => ({
       ...provided,

@@ -126,6 +126,54 @@ header{
 .acc-wrapper{
   height: 70vh;
   overflow: scroll;
+  width: 95vw;
+
+  .accordion__button{
+    background-color: #f4f4f4;
+    color: #444;
+    cursor: pointer;
+    padding: 5px;
+    width: 100%;
+    text-align: left;
+    border: none;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+
+  }
+}
+
+.cargo-views{
+  .css-1wuxhhm-control{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    width: 300px;
+    css-3c83pi-control{
+      width: 300px;
+    }
+    input{
+      color: inherit;
+      background: 0px center;
+      opacity: 0;
+      width: 217px;
+      grid-area: 1 / 2;
+      font: inherit;
+      min-width: 2px;
+      border: 0px;
+      margin: 0px;
+      outline: 0px;
+      padding: 0px;
+    }
+    .css-1wy0on6{
+      width: 100px;
+    }
+    .css-i3mjk3-menu{
+      width: 300px;
+    }
+  }
 }
 
 .price-card{

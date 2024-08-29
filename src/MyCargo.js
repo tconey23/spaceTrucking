@@ -43,7 +43,6 @@ const MyCargo = () => {
 
     const updateLocalFavs = () => {
       localStorage.setItem('favorite_systems', JSON.stringify(favSystems))
-      console.log(favSystems)
     }
 
 
