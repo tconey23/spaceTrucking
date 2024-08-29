@@ -32,6 +32,9 @@ function App() {
   
   return (
     <main> 
+      <aside>
+        
+      </aside>
       <header>
         <div className='link-container'>
           <NavLink to='spaceTrucking/Home'>Home</NavLink>
