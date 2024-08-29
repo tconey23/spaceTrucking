@@ -24,6 +24,40 @@
     }
 }
 
+.holo-wrapper {
+    background: rgba(0, 0, 0, 0);
+    height: 100%;
+    opacity: 0;
+    .canvas-test-wrapper{
+        width: 500px;
+        height: 450px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background: #ffffff00;
+
+        div{
+          background: rgba(255, 255, 255, 0) !important;
+          width: 100% !important;
+          height: 100% !important;
+
+          div{
+            background: rgba(255, 255, 255, 0) !important;
+            width: 100% !important;
+            height: 100% !important;
+
+            canvas{
+              background: rgba(255, 255, 255, 0) !important;
+              width: 100% !important;
+              height: 100% !important;
+            }
+        }
+    }
+}
+animation: nameGradient 0.5s ease-in 5.5s forwards
+}
+
 .ship-name{
     height: 20px;
     width: 100%;

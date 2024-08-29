@@ -12,7 +12,11 @@ import ShipHolo from './ShipHolo';
 const Ships = ({ myHangar }) => {
 
     const [holoPath, setHoloPath] = useState()
-    const [toggleHolo, setToggleHolo] = useState(true)
+    const [toggleHolo, setToggleHolo] = useState(false)
+
+    useEffect(() => {
+        holoPath && setToggleHolo(true)
+    }, [holoPath])
 
   return (
     <Accordion allowZeroExpanded={true} className='ship-accordion'>
@@ -43,7 +47,9 @@ const Ships = ({ myHangar }) => {
                 <div className='logo_wrapper'>
                     <img className='man-logo' src={veh.manufacturer.logo} alt={veh.manufacturer.name} />
                 </div>
-                {toggleHolo && <ShipHolo holoUrl={veh.holo}/>}
+            <div className='holo-wrapper'>
+                {toggleHolo && holoPath && <ShipHolo shipUrl={holoPath}/>}
+            </div>
             </div>
           </AccordionItemPanel>
         </AccordionItem>
