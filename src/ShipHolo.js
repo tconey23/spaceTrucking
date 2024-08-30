@@ -48,19 +48,44 @@ const ShipHolo = ({ shipUrl }) => {
     const [holoUrl, setHoloUrl] = useState(null);
     const controlsRef = useRef();
     const suspenseRef = useRef()
+    const [environment, setEnvironment] = useState()
+    const [devOrProd, setDevOrProd] = useState('')
 
     const newMaterial = new THREE.MeshPhysicalMaterial({
         color: '#00a2ff',
     });
-    
+
+    const vercel = 'https://spacetrucking.vercel.app/spaceTrucking/api/'
+    const dev = 'http://localhost:5001/'
+
     useEffect(() => {
-        if (shipUrl) {
+
+        setEnvironment(window.location.hostname)
+        
+        // console.log(window.location.hostname)
+    }, [])
+
+    useEffect(() => {
+        console.log(environment)
+
+        if(environment === 'localhost'){
+            setDevOrProd(dev)
+        } else {
+            setDevOrProd(vercel)
+        }
+
+    }, [environment])
+
+
+    useEffect(() => {
+        if (shipUrl && window.location.hostname) {
+            console.log(window.location.hostname)
             const fetchGltf = async () => {
                 try {
-                    const response = await fetch(`http://localhost:5001/fetch-gltf?url=${encodeURIComponent(shipUrl)}`);
+                    const response = await fetch(`${window.location.hostname}/fetch-gltf?url=${encodeURIComponent(shipUrl)}`);
                     if (response.ok) {
                         const filename = new URL(shipUrl).pathname.split('/').pop();
-                        setHoloUrl(`http://localhost:5001/downloads/${filename}`);
+                        setHoloUrl(`${window.location.hostname}/downloads/${filename}`);
                     } else {
                         console.error('Failed to fetch GLTF:', response.statusText);
                     }
@@ -76,7 +101,7 @@ const ShipHolo = ({ shipUrl }) => {
     
     const emptyDownloadsFolder = async () => {
         try {
-            const response = await fetch(`http://localhost:5001/empty-downloads`, {
+            const response = await fetch(`${window.location.hostname}/empty-downloads`, {
                 method: 'DELETE',
             });
     
