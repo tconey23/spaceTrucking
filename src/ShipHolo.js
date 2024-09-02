@@ -1,26 +1,22 @@
 import React, { useState, Suspense, useEffect, useRef } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, useGLTF, Html, Sphere, PerspectiveCamera, OrthographicCamera, Wireframe, Caustics} from '@react-three/drei';
-import { useThree } from '@react-three/fiber';
-import { useFrame } from '@react-three/fiber';
+import { OrbitControls, useGLTF, Html, OrthographicCamera } from '@react-three/drei';
+import { useThree, useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
 function Model({ url, position, cameraPosition, zoom, color = 'orange', materialProps = {} }) {
-    const { camera } = useThree()
+    const { camera } = useThree();
     const { scene, materials, nodes } = useGLTF(url);
-    const holoRef = useRef()
-    useEffect(() => {
-        if (cameraPosition || camera.zoom) {
-            camera.position.set(...cameraPosition);
-            camera.zoom = (zoom)
-        }
-              
-        camera.updateProjectionMatrix();
+    const holoRef = useRef();
 
-        // console.log("Camera position:", camera.position, "Camera zoom:", camera.zoom)
-        return () => {
-        };
-    }, [cameraPosition, camera, scene, materials, nodes]);
+    useEffect(() => {
+        const defaultCameraPosition = [0, 0, 5];
+        const defaultZoom = 1;
+
+        camera.position.set(...(cameraPosition || defaultCameraPosition));
+        camera.zoom = zoom || defaultZoom;
+        camera.updateProjectionMatrix();
+    }, [cameraPosition, zoom, camera, scene, materials, nodes]);
 
     useEffect(() => {
         scene.traverse((child) => {
@@ -34,10 +30,7 @@ function Model({ url, position, cameraPosition, zoom, color = 'orange', material
 
     useFrame(() => {
         if (holoRef.current) {
-            // Incrementally update the rotation on each frame
             holoRef.current.rotation.y -= 0.005; 
-            // holoRef.current.rotation.x += 0.005; 
-            // holoRef.current.rotation.z += 0.003; 
         }
     });
 
@@ -47,45 +40,23 @@ function Model({ url, position, cameraPosition, zoom, color = 'orange', material
 const ShipHolo = ({ shipUrl }) => {
     const [holoUrl, setHoloUrl] = useState(null);
     const controlsRef = useRef();
-    const suspenseRef = useRef()
-    const [environment, setEnvironment] = useState()
-    const [devOrProd, setDevOrProd] = useState('')
+    const suspenseRef = useRef();
+    const isDev = window.location.hostname === 'localhost';
+    const [devOrProd, setDevOrProd] = useState(isDev ? 'http://localhost:3001/' : 'https://your-production-url.com/');
 
     const newMaterial = new THREE.MeshPhysicalMaterial({
         color: '#00a2ff',
     });
 
-    const vercel = 'https://spacetrucking.vercel.app/spaceTrucking/api/'
-    const dev = 'http://localhost:5001/'
-
     useEffect(() => {
-
-        setEnvironment(window.location.hostname)
-        
-        // console.log(window.location.hostname)
-    }, [])
-
-    useEffect(() => {
-        console.log(environment)
-
-        if(environment === 'localhost'){
-            setDevOrProd(dev)
-        } else {
-            setDevOrProd(vercel)
-        }
-
-    }, [environment])
-
-
-    useEffect(() => {
-        if (shipUrl && window.location.hostname) {
-            console.log(window.location.hostname)
+        if (shipUrl) {
             const fetchGltf = async () => {
                 try {
-                    const response = await fetch(`${window.location.hostname}/fetch-gltf?url=${encodeURIComponent(shipUrl)}`);
+                    const response = await fetch(`${devOrProd}fetch-gltf?url=${encodeURIComponent(shipUrl)}`);
                     if (response.ok) {
                         const filename = new URL(shipUrl).pathname.split('/').pop();
-                        setHoloUrl(`${window.location.hostname}/downloads/${filename}`);
+                        console.log(`${devOrProd}downloads/${filename}`)
+                        setHoloUrl(`${devOrProd}downloads/${filename}`);
                     } else {
                         console.error('Failed to fetch GLTF:', response.statusText);
                     }
@@ -96,15 +67,14 @@ const ShipHolo = ({ shipUrl }) => {
 
             fetchGltf();
         }
+    }, [shipUrl, devOrProd]);
 
-    }, [shipUrl]);
-    
     const emptyDownloadsFolder = async () => {
         try {
-            const response = await fetch(`${window.location.hostname}/empty-downloads`, {
+            const response = await fetch(`${devOrProd}empty-downloads`, {
                 method: 'DELETE',
             });
-    
+
             if (response.ok) {
                 console.log('Downloads folder emptied successfully.');
             } else {
@@ -114,50 +84,38 @@ const ShipHolo = ({ shipUrl }) => {
             console.error('Error emptying downloads folder:', error);
         }
     };
+
     useEffect(() => {
-        
-
         return () => {
-            emptyDownloadsFolder()
-        }
+                emptyDownloadsFolder();
+        };
     }, []);
-
-
-
 
     return (
         <div className='canvas-test-wrapper'>
-            <Canvas ref={suspenseRef} style={{ width: '50%', height: '50%', background: 'black' }} >
-                <directionalLight intensity={100} position={[10, 10, 10]} color={'#00a2ff'}/>
+            <Canvas ref={suspenseRef} style={{ width: '50%', height: '50%', background: 'black' }}>
+                <directionalLight intensity={100} position={[10, 10, 10]} color={'#00a2ff'} />
                 {holoUrl && (
-                    <Suspense 
-                    onChange={() => console.log('model change')}
-                    fallback={<Html>Loading...</Html>}>
-
-                            <Model  
-                                
-                                zoom={5.403600876626375} 
-                                cameraPosition={[-217.72807196061004, 109.15011821192999, 195.9202756077539]} 
-                                position={[0,0,0]} 
-                                url={holoUrl} 
-                                newMaterial={newMaterial}
-                                onChange={() => console.log('model change')}
-                            />
+                    <Suspense fallback={<Html>Loading...</Html>}>
+                        <Model
+                            zoom={5.403600876626375}
+                            cameraPosition={[-217.72807196061004, 109.15011821192999, 195.9202756077539]}
+                            position={[0, 0, 0]}
+                            url={holoUrl}
+                            newMaterial={newMaterial}
+                        />
                     </Suspense>
                 )}
-                <OrthographicCamera/>
-                <OrbitControls 
-                ref={controlsRef}
-                onChange={(e) => {
-
-                  const camera = e.target.object;
-                //   console.log('Camera position:', [...camera.position])
-                //   console.log('Camera zoom:', camera.zoom);
-                }}
+                <OrthographicCamera />
+                <OrbitControls
+                    ref={controlsRef}
+                    onChange={(e) => {
+                        const camera = e.target.object;
+                    }}
                 />
             </Canvas>
         </div>
     );
-}
+};
 
 export default ShipHolo;

@@ -406,18 +406,20 @@ main {
   font-size: calc(10px + 2vmin);
   color: white;
   align-items: center;
+
+  aside {
+    height: 92vh;
+    width: 0px;
+    position: absolute;
+    background: #282c34;
+    top: 74px;
+    left: -100px;
+    box-shadow: 1px 1px 12px black;
+    z-index: 7;
+  }
 }
 
-aside {
-  height: 92vh;
-  width: 15vw;
-  position: absolute;
-  background: #282c34;
-  top: 74px;
-  left: 1px;
-  box-shadow: 1px 1px 12px black;
-  z-index: 7;
-}
+
 
 .splash-img-container{
   width: 95vw;

@@ -73,7 +73,7 @@ const Outposts = ({planet, system, orbit}) => {
                 <AccordionItemHeading>
                     <AccordionItemButton>
                         {selectedStation.name}
-                        <i class="fi fi-sr-undo return-button" onClick={() => setSelectedSystem('')}></i>
+                        <i className="fi fi-sr-undo return-button" onClick={() => setSelectedSystem('')}></i>
                     </AccordionItemButton>
                 </AccordionItemHeading>
             </AccordionItem>

@@ -10,21 +10,26 @@ import './Ships.css'
 import ShipHolo from './ShipHolo';
 
 const Ships = ({ myHangar }) => {
+    const [holoPath, setHoloPath] = useState(null);
 
-    const [holoPath, setHoloPath] = useState()
-    const [toggleHolo, setToggleHolo] = useState(false)
+    const handleHoloClick = (path) => {
+        setHoloPath(path);
+    };
 
     useEffect(() => {
-        holoPath && setToggleHolo(true)
-    }, [holoPath])
+        if (holoPath) {
+            
+        }
+    }, [holoPath]);
 
   return (
     <Accordion allowZeroExpanded={true} className='ship-accordion'>
       {myHangar.map((veh) => (
-        <AccordionItem key={veh.id} onClick={() => setHoloPath(veh.holo)}>
+        <AccordionItem key={veh.id} >
           <AccordionItemHeading>
             <AccordionItemButton>
-                    <p className='ship-name'>{veh.name}</p>
+                <button onClick={() => handleHoloClick(veh.holo)}/>
+                <p className='ship-name'>{veh.name}</p>
             </AccordionItemButton>
           </AccordionItemHeading>
           <AccordionItemPanel
@@ -48,7 +53,7 @@ const Ships = ({ myHangar }) => {
                     <img className='man-logo' src={veh.manufacturer.logo} alt={veh.manufacturer.name} />
                 </div>
             <div className='holo-wrapper'>
-                {toggleHolo && holoPath && <ShipHolo shipUrl={holoPath}/>}
+                {holoPath && <ShipHolo shipUrl={holoPath}/>}
             </div>
             </div>
           </AccordionItemPanel>
