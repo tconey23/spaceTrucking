@@ -9,7 +9,7 @@ import {
 import 'react-accessible-accordion/dist/fancy-example.css';
 import Orbits from './Orbits';
 
-const Planets = ({ system, setSelectedSystem }) => {
+const Planets = ({ token, system, setSelectedSystem }) => {
   const [planets, setPlanets] = useState([]);
   const [selectedPlanet, setSelectedPlanet] = useState(null);
 
@@ -72,7 +72,7 @@ const Planets = ({ system, setSelectedSystem }) => {
               </AccordionItemButton>
             </AccordionItemHeading>
             <AccordionItemPanel>
-              <Orbits planet={selectedPlanet} system={system}/>
+              <Orbits token={token} planet={selectedPlanet} system={system}/>
             </AccordionItemPanel>
           </AccordionItem>
         </Accordion>

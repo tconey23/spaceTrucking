@@ -10,7 +10,7 @@ import {
 import 'react-accessible-accordion/dist/fancy-example.css';
 import CargoRecord from './CargoRecord';
 
-const Outposts = ({planet, system, orbit}) => {
+const Outposts = ({planet, system, orbit, token}) => {
 
     const [selectedPlanet, setSelectedPlanet] = useState(planet)
     const [selectedSystem, setSelectedSystem] = useState(system)
@@ -78,7 +78,7 @@ const Outposts = ({planet, system, orbit}) => {
                 </AccordionItemHeading>
             </AccordionItem>
                 <AccordionItemPanel>
-                    <CargoRecord planet={planet} system={system} orbit={selectedOrbit} station={selectedStation}/>
+                    <CargoRecord token={token} planet={planet} system={system} orbit={selectedOrbit} station={selectedStation}/>
                 </AccordionItemPanel>
         </>
         }

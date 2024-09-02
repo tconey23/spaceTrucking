@@ -1,0 +1,27 @@
+.login-wrapper{
+    width: 75vw;
+    height: 25vh;
+    background-color: white;
+
+    label{
+        color: black;
+    }
+    .password-input, .email-input{
+        height: 10px;
+        width: 200px;
+        border: 1px solid black;
+        color: black !important;
+        padding: 5px;
+        padding-left: 10px;
+        margin: 10px;
+        &:hover{
+            height: 10px !important;
+            width: 200px !important;
+            border: 1px solid black !important;
+            color: black !important;
+            padding: 5px;
+            padding-left: 10px;
+            margin: 10px;
+        }
+    }
+}

@@ -55,7 +55,7 @@ const ShipHolo = ({ shipUrl }) => {
                     const response = await fetch(`${devOrProd}fetch-gltf?url=${encodeURIComponent(shipUrl)}`);
                     if (response.ok) {
                         const filename = new URL(shipUrl).pathname.split('/').pop();
-                        console.log(`${devOrProd}downloads/${filename}`)
+                        console.log(filename)
                         setHoloUrl(`${devOrProd}downloads/${filename}`);
                     } else {
                         console.error('Failed to fetch GLTF:', response.statusText);
@@ -67,6 +67,7 @@ const ShipHolo = ({ shipUrl }) => {
 
             fetchGltf();
         }
+        console.log(devOrProd)
     }, [shipUrl, devOrProd]);
 
     const emptyDownloadsFolder = async () => {
@@ -87,7 +88,7 @@ const ShipHolo = ({ shipUrl }) => {
 
     useEffect(() => {
         return () => {
-                emptyDownloadsFolder();
+            emptyDownloadsFolder();
         };
     }, []);
 

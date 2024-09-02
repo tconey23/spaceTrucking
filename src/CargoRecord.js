@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Commodities from './Commodities';
 import commData from '../src/mockCommodityData.json';
 
-const CargoRecord = ({ planet, system, orbit, station}) => {
+const CargoRecord = ({ planet, system, orbit, station, token }) => {
   const [storedCargo, setStoredCargo] = useState([]);
   const [addCargoItem, setAddCargoItem] = useState(false);
   const [commsList, setCommsList] = useState([]);
@@ -10,32 +10,34 @@ const CargoRecord = ({ planet, system, orbit, station}) => {
   const [commodity, setCommodity] = useState('');
   const [inventory, setInventory] = useState([]);
 
+  const prod = 'https://space-trucking-backend-2d499135d3db.herokuapp.com/'
+  const dev = 'http://localhost:3001/'
   useEffect(() => {
     const fetchCargoRecords = async () => {
       try {
-        const response = await fetch('http://localhost:3001/cargo');
+        const response = await fetch(`${prod}cargo`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
         if (response.ok) {
-          const data = await response.json();
-          console.log('Full response data:', data);
+          const records = await response.json();
+          console.log('Full response data:', records);
   
-          const records = data.cargo_records || [];
           if (Array.isArray(records)) {
             setStoredCargo(records);
 
-            // Find matching inventory based on the current system, planet, and orbit
-            const matchedInventory = records.find(
+            // Filter inventory based on the current system, planet, and orbit
+            const matchedInventory = records.filter(
               (rec) =>
                 rec.orbit.name === orbit.name &&
                 rec.planet.name === planet.name &&
                 rec.system.name === system.name
             );
-  
-            // If matched inventory is found, set it to inventory state
-            if (matchedInventory) {
-              setInventory(matchedInventory.cargo);
-            } else {
-              setInventory([]); // No match, set inventory to empty array
-            }
+
+            // Set the filtered inventory (note: `cargo` is now a single object, not an array)
+            setInventory(matchedInventory.map((rec) => rec.cargo));
           } else {
             console.error('Expected an array but got:', typeof records);
           }
@@ -46,10 +48,11 @@ const CargoRecord = ({ planet, system, orbit, station}) => {
         console.error('Error fetching cargo records:', error);
       }
     };
+
+    console.log(token)
   
     fetchCargoRecords();
-  }, [system, planet, orbit, station]);
-  
+  }, [system, planet, orbit, station, token]);
 
   useEffect(() => {
     if (commData && commData.data) {
@@ -78,47 +81,56 @@ const CargoRecord = ({ planet, system, orbit, station}) => {
     let newCargoList;
   
     if (type === 'add') {
+      // Create a new cargo item with a unique ID
       const newCargoItem = { id: Date.now(), commodity, scu: scuValue };
   
-      newCargoList = storedCargo.map(rec => {
-        if (
-          rec.orbit.name === orbit.name &&
-          rec.planet.name === planet.name &&
-          rec.system.name === system.name
-        ) {
-          return {
-            ...rec,
-            cargo: [...(rec.cargo || []), newCargoItem]
-          };
-        }
-        return rec;
-      });
-  
-      const recordExists = newCargoList.some(
-        rec =>
+      // Check if the system, planet, and orbit already exist
+      const existingRecord = storedCargo.find(
+        (rec) =>
           rec.orbit.name === orbit.name &&
           rec.planet.name === planet.name &&
           rec.system.name === system.name
       );
   
-      if (!recordExists) {
-        newCargoList = [
-          ...newCargoList,
-          { id: Date.now(), system, planet, orbit, station, cargo: [newCargoItem] },
-        ];
+      if (existingRecord) {
+        // If the record exists, update the existing cargo with the new item
+        existingRecord.cargo = newCargoItem;
+        newCargoList = storedCargo.map((rec) =>
+          rec.orbit.name === orbit.name &&
+          rec.planet.name === planet.name &&
+          rec.system.name === system.name
+            ? existingRecord
+            : rec
+        );
+      } else {
+        // If the record doesn't exist, create a new record
+        const newRecord = {
+          system,
+          planet,
+          orbit,
+          station,
+          cargo: newCargoItem,
+        };
+        newCargoList = [...storedCargo, newRecord];
       }
   
-      setInventory((prevInventory) => [...prevInventory, newCargoItem]);
+      setStoredCargo(newCargoList);
+      setInventory(newCargoList.map((rec) => rec.cargo));
   
-      // Send POST request to backend to add new cargo item
+      // Send POST request to backend to add the new cargo item
       try {
-        const response = await fetch('http://localhost:3001/add-cargo', {
+        const response = await fetch(`${prod}/add-cargo`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
           },
           body: JSON.stringify({
-            system, planet, orbit, station, cargo: newCargoItem,
+            system,
+            planet,
+            orbit,
+            station,
+            cargo: newCargoItem,
           }),
         });
   
@@ -129,27 +141,33 @@ const CargoRecord = ({ planet, system, orbit, station}) => {
         console.error('Error adding cargo item:', error);
       }
   
+      // Reset form fields after adding
+      setAddCargoItem(false);
+      setCommodity('');
+      setScuValue(0);
+  
     } else if (type === 'update') {
+      // Update the existing cargo item
       newCargoList = storedCargo.map(record => {
-        return {
-          ...record,
-          cargo: record.cargo.map(item => {
-            if (item.id === parseInt(id)) {
-              return { ...item, commodity: comm, scu: scu };
-            }
-            return item;
-          })
-        };
+        if (record.cargo.id === id) {
+          return {
+            ...record,
+            cargo: { ...record.cargo, commodity: comm, scu: scu }
+          };
+        }
+        return record;
       });
   
-      setInventory(prevInventory => prevInventory.map(item => item.id === parseInt(id) ? { ...item, commodity: comm, scu: scu } : item));
+      setStoredCargo(newCargoList);
+      setInventory(newCargoList.map((rec) => rec.cargo));
   
-      // Send PUT request to backend to update cargo item
+      // Send PUT request to backend to update the cargo item
       try {
-        const response = await fetch(`http://localhost:3001/update-cargo/${id}`, {
+        const response = await fetch(`${prod}update-cargo/${id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
           },
           body: JSON.stringify({
             commodity: comm, scu: scu,
@@ -164,24 +182,19 @@ const CargoRecord = ({ planet, system, orbit, station}) => {
       }
   
     } else if (type === 'delete') {
-      newCargoList = storedCargo.map(rec => {
-        if (
-          rec.orbit.name === orbit.name &&
-          rec.planet.name === planet.name &&
-          rec.system.name === system.name
-        ) {
-          const updatedCargo = rec.cargo.filter(item => item.id !== parseInt(id));
-          return { ...rec, cargo: updatedCargo };
-        }
-        return rec;
-      });
+      // Remove the cargo item with the matching ID
+      newCargoList = storedCargo.filter(rec => rec.cargo.id !== id);
   
-      setInventory(prevInventory => prevInventory.filter(item => item.id !== parseInt(id)));
+      setStoredCargo(newCargoList);
+      setInventory(newCargoList.map((rec) => rec.cargo));
   
-      // Send DELETE request to backend to delete cargo item
+      // Send DELETE request to backend to delete the cargo item
       try {
-        const response = await fetch(`http://localhost:3001/delete-cargo/${id}`, {
+        const response = await fetch(`${prod}delete-cargo/${id}`, {
           method: 'DELETE',
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
         });
   
         if (!response.ok) {
@@ -191,17 +204,8 @@ const CargoRecord = ({ planet, system, orbit, station}) => {
         console.error('Error deleting cargo item:', error);
       }
     }
-  
-    setStoredCargo(newCargoList);
-  
-    if (type === 'add' || type === 'update') {
-      setAddCargoItem(false);
-      setCommodity('');
-      setScuValue(0);
-    }
   };
   
-
   return (
     <div className='cargo-record'>
       <h3>{system.name}</h3>
@@ -210,7 +214,7 @@ const CargoRecord = ({ planet, system, orbit, station}) => {
 
       <span>
         <p>Add Cargo</p>
-        <i onClick={() => setAddCargoItem(true)} className="fi fi-sr-add"></i>
+        <i onClick={(e) => { e.preventDefault(); setAddCargoItem(true); }} className="fi fi-sr-add"></i>
       </span>
 
       {addCargoItem && (
@@ -231,12 +235,19 @@ const CargoRecord = ({ planet, system, orbit, station}) => {
                 step="1"
               />
             </label>
-            <i onClick={()=>addCommodity('add')} className="fi fi-sr-add"></i>
+            <i onClick={(e) => { e.preventDefault(); addCommodity('add'); }} className="fi fi-sr-add"></i>
           </span>
         </>
       )}
       {inventory.map((inv) => (
-        <Commodities key={inv.id} commodity={inv.commodity} scu={inv.scu} recordData={[system, planet, orbit, station]} inv={inv} commsList={commsList} scuValue={inv.scu} setScuValue={setScuValue} setCommodity={setCommodity} addCommodity={addCommodity}/>
+        <Commodities 
+          key={inv.id} 
+          commodity={inv.commodity} 
+          scu={inv.scu} 
+          inv={inv} 
+          commsList={commsList} 
+          addCommodity={addCommodity} 
+        />
       ))}
     </div>
   );

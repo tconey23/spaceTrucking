@@ -3,7 +3,7 @@ import { getData } from './apiCalls';
 import CargoRecord from './CargoRecord';
 
 
-const Terminals = ({ selection, system, setIsSubmit }) => {
+const Terminals = ({ selection, system, setIsSubmit, token }) => {
 
   const [optionList, setOptionList] = useState([]);
   const [terminals, setTerminals] = useState([]);
@@ -69,7 +69,7 @@ const Terminals = ({ selection, system, setIsSubmit }) => {
       }
       </span>
       :
-      <CargoRecord selection={selection} system={system} terminal={selectedOption}/>
+      <CargoRecord token={token} selection={selection} system={system} terminal={selectedOption}/>
     }
     </div>
   );

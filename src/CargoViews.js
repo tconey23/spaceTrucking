@@ -6,7 +6,7 @@ import { customStyles, customStylesSmall } from './dropDownStyles';
 import CommodityAccordion from './CommodityAccordion';
 import MyCommodities from './MyCommodities';
 
-const CargoViews = ({systems}) => {
+const CargoViews = ({systems, token}) => {
     const [viewType, setViewType] = useState()
     const [selectedView, setSelectedView] = useState('locations')
 
@@ -35,8 +35,8 @@ useEffect(() => {
                 onChange={(e) => handleSelectView(e)}
             />
         </span>
-        {viewType === 'locations' && <MyCargo systems={systems}/>} 
-        {viewType === 'commodities' && <MyCommodities />} 
+        {viewType === 'locations' && <MyCargo systems={systems} token={token}/>} 
+        {viewType === 'commodities' && <MyCommodities token={token}/>} 
     </div>
   )
 }

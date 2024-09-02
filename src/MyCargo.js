@@ -10,7 +10,7 @@ import {
 import 'react-accessible-accordion/dist/fancy-example.css';
 import Planets from './Planets';
 
-const MyCargo = () => {
+const MyCargo = ({token}) => {
   const [storedSystems, setStoredSystems] = useState();
   const [favSystems, setFavSystems] = useState([]);
   const [systems, setSystems] = useState(null);
@@ -117,6 +117,7 @@ const MyCargo = () => {
 
         {selectedSystem && (
           <Planets
+          token={token}
             setSelectedSystem={setSelectedSystem}
             system={systems.find((sys) => sys.id === selectedSystem)}
           />

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getData } from './apiCalls';
 import Terminals from './Terminals';
 
-const Systems = ({ system }) => {
+const Systems = ({ system, token }) => {
 
     const [selectedOption, setSelectedOption] = useState('defaultOption');
     const [selectedType, setSelectedType] = useState([]);
@@ -79,7 +79,7 @@ const Systems = ({ system }) => {
 
             {typeSelection !== 'defaultOption' &&
                 <>
-                    <Terminals selection={typeSelection} system={system} setIsSubmit={setIsSubmit}/>
+                    <Terminals token={token} selection={typeSelection} system={system} setIsSubmit={setIsSubmit}/>
                 </>
             }
 

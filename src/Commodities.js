@@ -24,16 +24,18 @@ const Commodities = ({ commodity: initialCommodity, scu: initialScu, inv, commsL
   };
 
   const updateInventory = () => {
+    // Update the inventory with the new commodity and SCU values
     addCommodity('update', inv.id, scuValue, commodity);
-    setEditRecord(null);
+    setEditRecord(null); // Exit edit mode after updating
   };
 
   const deleteInventory = () => {
+    // Delete the inventory item based on its ID
     addCommodity('delete', inv.id);
   };
 
   const editInventory = () => {
-    setEditRecord(inv.id);
+    setEditRecord(inv.id); // Enter edit mode for the selected inventory item
   };
 
   return (
@@ -46,13 +48,12 @@ const Commodities = ({ commodity: initialCommodity, scu: initialScu, inv, commsL
           <th className='comm-edit'>DELETE</th>
         </tr>
         <tr>
-          {!editRecord &&
+          {!editRecord ? (
             <>
               <td className='comm-row'>{initialCommodity}</td>
               <td className='scu-row'>{initialScu}</td>
             </>
-          }
-          {editRecord &&
+          ) : (
             <>
               <td className='comm-row'>            
                 <select value={commodity} onChange={selectComm}>
@@ -71,14 +72,14 @@ const Commodities = ({ commodity: initialCommodity, scu: initialScu, inv, commsL
                 />
               </td>
             </>
-          }
+          )}
           <td className='comm-edit'>
-            {editRecord ? 
-            <i id={inv.id} onClick={updateInventory} className="fi fi-sr-add"></i>
-            :
-            <i id={inv.id} onClick={editInventory} className="fi fi-sr-pen-square"></i>
-            }
-            </td>
+            {editRecord ? (
+              <i id={inv.id} onClick={updateInventory} className="fi fi-sr-add"></i>
+            ) : (
+              <i id={inv.id} onClick={editInventory} className="fi fi-sr-pen-square"></i>
+            )}
+          </td>
           <td className='comm-edit'>
             <i id={inv.id} onClick={deleteInventory} className="fi fi-sr-trash"></i>
           </td>
