@@ -9,13 +9,16 @@ const CargoRecord = ({ planet, system, orbit, station, token }) => {
   const [scuValue, setScuValue] = useState(0);
   const [commodity, setCommodity] = useState('');
   const [inventory, setInventory] = useState([]);
-
+  const [document] = useState('cargo_records')
+  
   const prod = 'https://space-trucking-backend-2d499135d3db.herokuapp.com/'
   const dev = 'http://localhost:3001/'
+  const [devProd] = useState(dev)
+  
   useEffect(() => {
     const fetchCargoRecords = async () => {
       try {
-        const response = await fetch(`${prod}cargo`, {
+        const response = await fetch(`${devProd}cargo`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`
@@ -119,7 +122,7 @@ const CargoRecord = ({ planet, system, orbit, station, token }) => {
   
       // Send POST request to backend to add the new cargo item
       try {
-        const response = await fetch(`${prod}/add-cargo`, {
+        const response = await fetch(`${devProd}add-cargo`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -163,7 +166,7 @@ const CargoRecord = ({ planet, system, orbit, station, token }) => {
   
       // Send PUT request to backend to update the cargo item
       try {
-        const response = await fetch(`${prod}update-cargo/${id}`, {
+        const response = await fetch(`${devProd}update-cargo/${document}/${id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -190,7 +193,7 @@ const CargoRecord = ({ planet, system, orbit, station, token }) => {
   
       // Send DELETE request to backend to delete the cargo item
       try {
-        const response = await fetch(`${prod}delete-cargo/${id}`, {
+        const response = await fetch(`${devProd}delete-cargo/${document}/${id}`, {
           method: 'DELETE',
           headers: {
             "Authorization": `Bearer ${token}`

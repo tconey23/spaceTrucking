@@ -44,6 +44,10 @@ const ShipHolo = ({ shipUrl }) => {
     const isDev = window.location.hostname === 'localhost';
     const [devOrProd, setDevOrProd] = useState(isDev ? 'http://localhost:3001/' : 'https://your-production-url.com/');
 
+    const prod = 'https://space-trucking-backend-2d499135d3db.herokuapp.com/'
+    const dev = 'http://localhost:3001/'
+    const [devProd] = useState(prod)
+
     const newMaterial = new THREE.MeshPhysicalMaterial({
         color: '#00a2ff',
     });
@@ -52,11 +56,11 @@ const ShipHolo = ({ shipUrl }) => {
         if (shipUrl) {
             const fetchGltf = async () => {
                 try {
-                    const response = await fetch(`${devOrProd}fetch-gltf?url=${encodeURIComponent(shipUrl)}`);
+                    const response = await fetch(`${devProd}fetch-gltf?url=${encodeURIComponent(shipUrl)}`);
                     if (response.ok) {
                         const filename = new URL(shipUrl).pathname.split('/').pop();
                         console.log(filename)
-                        setHoloUrl(`${devOrProd}downloads/${filename}`);
+                        setHoloUrl(`${devProd}downloads/${filename}`);
                     } else {
                         console.error('Failed to fetch GLTF:', response.statusText);
                     }
@@ -67,12 +71,12 @@ const ShipHolo = ({ shipUrl }) => {
 
             fetchGltf();
         }
-        console.log(devOrProd)
-    }, [shipUrl, devOrProd]);
+        console.log(devProd)
+    }, [shipUrl, devProd]);
 
     const emptyDownloadsFolder = async () => {
         try {
-            const response = await fetch(`${devOrProd}empty-downloads`, {
+            const response = await fetch(`${devProd}empty-downloads`, {
                 method: 'DELETE',
             });
 

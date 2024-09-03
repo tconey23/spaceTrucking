@@ -12,7 +12,7 @@ import HoloTest from './HoloTest';
 import { initializeApp } from 'firebase/app';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import Login from './Login';
-
+import { useNavigate } from 'react-router-dom';
 
 function App() {
 
@@ -21,7 +21,7 @@ function App() {
   const [loggedIn, setLoggedIn] = useState(false)
   const [credentials, setCredentials] = useState(null)
   const [token, setToken] = useState()
-
+  const navigate = useNavigate()
   const systemURL = 'https://uexcorp.space/api/2.0/star_systems'
 
   useEffect(() => {
@@ -72,6 +72,7 @@ function App() {
 
   useEffect(() => {
     token && setLoggedIn(true)
+    !token && !loggedIn && navigate('')
     console.log(token, loggedIn)
   }, [token])
   
