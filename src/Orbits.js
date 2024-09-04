@@ -7,7 +7,6 @@ import {
   AccordionItemButton,
   AccordionItemPanel,
 } from 'react-accessible-accordion';
-import 'react-accessible-accordion/dist/fancy-example.css';
 import Outposts from './Outposts';
 
 const Orbits = ({planet, system, token}) => {
@@ -35,7 +34,6 @@ const Orbits = ({planet, system, token}) => {
     }
 
     const getMoons = async (planetId, planetName) => {
-        console.log(planetId, planetName)
         const res = await getData(
           `moons?id_star_system=${selectedSystem.id}&id_planet=${planetId}`
         );
@@ -57,7 +55,6 @@ const Orbits = ({planet, system, token}) => {
         }));
     
         const mergedArray = [...res, ...filterMap];
-        console.log(selectedSystem)
         setOrbits(mergedArray)
       };
 
@@ -66,32 +63,28 @@ const Orbits = ({planet, system, token}) => {
     }, [])
 
     useEffect(() => {
-        console.log(selectedOrbit)
-    }, [selectedOrbit])
-
-    useEffect(() => {
         selectedPlanet && getMoons(selectedPlanet.id, selectedPlanet.name)
     }, [selectedPlanet])
 
   return (
     <Accordion className='orbit-accordion' allowMultipleExpanded allowZeroExpanded preExpanded={['selectedPlanet', 'selectedSystem']}>
       {orbits && !selectedOrbit && orbits.map((orbit) => (
-        <AccordionItem key={orbit.id} onClick={() => orbitSelected(orbit)}>
+        <AccordionItem key={orbit.id} onClick={() => orbitSelected(orbit)} id='orbitItem'>
           <AccordionItemHeading>
             <AccordionItemButton>
               {orbit.name}
-              <i className="fi fi-sr-undo return-button" onClick={() => setSelectedSystem('')}></i>
+              {/* <i className="fi fi-sr-undo return-button" onClick={() => setSelectedOrbit('')}></i> */}
             </AccordionItemButton>
           </AccordionItemHeading>
         </AccordionItem>
       ))}
         {selectedOrbit && 
         <>
-            <AccordionItem>
+            <AccordionItem id='orbitItem'>
                 <AccordionItemHeading>
                     <AccordionItemButton>
                         {selectedOrbit.name}
-                        <i className="fi fi-sr-undo return-button" onClick={() => setSelectedSystem('')}></i>
+                        <i className="fi fi-sr-undo return-button" onClick={() => setSelectedOrbit('')}></i>
                     </AccordionItemButton>
                 </AccordionItemHeading>
             </AccordionItem>

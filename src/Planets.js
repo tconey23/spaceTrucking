@@ -6,7 +6,6 @@ import {
   AccordionItemButton,
   AccordionItemPanel,
 } from 'react-accessible-accordion';
-import 'react-accessible-accordion/dist/fancy-example.css';
 import Orbits from './Orbits';
 
 const Planets = ({ token, system, setSelectedSystem }) => {
@@ -50,7 +49,7 @@ const Planets = ({ token, system, setSelectedSystem }) => {
               </AccordionItemButton>
             </AccordionItem>
       {planets.length > 0 && !selectedPlanet && planets.map((planet) => (
-        <AccordionItem key={planet.id} onClick={() => planetSelected(planet)}>
+        <AccordionItem key={planet.id} onClick={() => planetSelected(planet)} id='planetItem'>
           <AccordionItemHeading>
             <AccordionItemButton>
                 <>
@@ -64,11 +63,11 @@ const Planets = ({ token, system, setSelectedSystem }) => {
 
       {selectedPlanet && (
         <Accordion preExpanded={['selectedPlanet', 'selectedSystem']}>
-          <AccordionItem uuid="selectedPlanet">
+          <AccordionItem uuid="selectedPlanet" id='planetItem'>
             <AccordionItemHeading>
-              <AccordionItemButton>
+              <AccordionItemButton >
                 {selectedPlanet.name}
-                <i className="fi fi-sr-undo return-button" onClick={() => setSelectedSystem('')}></i>
+                <i className="fi fi-sr-undo return-button" onClick={() => setSelectedPlanet('')}></i>
               </AccordionItemButton>
             </AccordionItemHeading>
             <AccordionItemPanel>

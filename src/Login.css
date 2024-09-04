@@ -2,26 +2,61 @@
     width: 75vw;
     height: 25vh;
     background-color: white;
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    border-radius:6px;
+    form{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        flex-wrap: nowrap;
+        label{
+            color: black;
 
-    label{
-        color: black;
-    }
-    .password-input, .email-input{
-        height: 10px;
-        width: 200px;
-        border: 1px solid black;
-        color: black !important;
-        padding: 5px;
-        padding-left: 10px;
-        margin: 10px;
-        &:hover{
-            height: 10px !important;
-            width: 200px !important;
-            border: 1px solid black !important;
-            color: black !important;
-            padding: 5px;
-            padding-left: 10px;
-            margin: 10px;
+            .password-input, .email-input{
+                height: 20px;
+                width: 300px;
+                border: 1px solid black;
+                color: black !important;
+                padding: 5px;
+                padding-left: 10px;
+                margin: 10px;
+                &:hover{
+                    height: 20px !important;
+                    width: 300px !important;
+                    border: 1px solid black !important;
+                    color: black !important;
+                    padding: 5px;
+                    padding-left: 10px;
+                    margin: 10px;
+                }
+            }
+        }
+        button{
+            box-shadow:inset 0px 1px 0px 0px #97c4fe;
+            background:linear-gradient(to bottom, #3d94f6 5%, #1e62d0 100%);
+            background-color:#3d94f6;
+            border-radius:6px;
+            border:1px solid #337fed;
+            display:inline-block;
+            cursor:pointer;
+            color:#ffffff;
+            font-family:Arial;
+            font-size:15px;
+            font-weight:bold;
+            padding:6px 24px;
+            text-decoration:none;
+            text-shadow:0px 1px 0px #1570cd;
+            opacity: 1;
+            &:hover{
+                background:linear-gradient(to bottom, #1e62d0 5%, #3d94f6 100%);
+                background-color:#1e62d0;
+            }
         }
     }
+
 }

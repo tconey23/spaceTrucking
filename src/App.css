@@ -2,6 +2,129 @@
 @import "~@flaticon/flaticon-uicons/css/all/all";
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
+#cargoAccordion{
+  .accordion__item{
+    margin-top: 1px;
+    &:hover{
+      
+    }
+  }
+  #planetItem{
+    margin-left: 20px;
+    margin-top: 1px;
+  }
+  #orbitItem{
+    margin-left: 20px;
+    margin-top: 1px;
+  }
+  #outpostItem{
+    margin-left: 40px;
+    margin-top: 1px;
+    .accordion__panel{
+      width: 100%;
+    }
+  }
+}
+
+a{
+  text-decoration: none;
+}
+
+.login{
+  margin-right: 33px;
+  font-size: 15px;
+  text-wrap: pretty;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  &:hover{
+
+    &::after{
+      content: '\A log in';
+      white-space: pre;
+      text-align: center;
+      margin-top: -24px;
+    }
+  }
+}
+
+.logout{
+  margin-right: 33px;
+  font-size: 15px;
+  text-wrap: pretty;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  &:hover{
+
+    &::after{
+      content: '\A log out';
+      white-space: pre;
+      text-align: center;
+      margin-top: -24px;
+    }
+  }
+}
+
+.home{
+  margin-right: 33px;
+  font-size: 15px;
+  text-wrap: pretty;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  &:hover{
+
+    &::after{
+      content: '\A home';
+      white-space: pre;
+      text-align: center;
+      margin-top: -24px;
+    }
+  }
+}
+
+.cargo{
+  margin-right: 33px;
+  font-size: 15px;
+  text-wrap: pretty;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  &:hover{
+
+    &::after{
+      content: '\A my cargo';
+      white-space: pre;
+      text-align: center;
+      margin-top: -24px;
+    }
+  }
+}
+
+.fleet{
+  margin-right: 33px;
+  font-size: 15px;
+  text-wrap: pretty;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  &:hover{
+
+    &::after{
+      content: '\A my fleet';
+      white-space: pre;
+      text-align: center;
+      margin-top: -24px;
+    }
+  }
+}
+
 body{
   font-family: "Orbitron", sans-serif;
   overflow: hidden;

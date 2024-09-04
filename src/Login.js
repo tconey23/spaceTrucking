@@ -1,11 +1,14 @@
 import React, {useState, useEffect} from 'react'
+import { useNavigate } from 'react-router-dom'
+
 import './Login.css'
 import { pass } from 'three/webgpu'
 
 const Login = ({setCredentials}) => {
 
-    const [emailAddress, setEmailAddress] = useState()
-    const [password, setPassword] = useState()
+    const [emailAddress, setEmailAddress] = useState('tom.ce.coney@gmail.com')
+    const [password, setPassword] = useState('MaddieMax1987')
+    const navigate = useNavigate()
 
 const updateForm = (type, value) => {
     console.log(type, value)
@@ -21,19 +24,11 @@ const submit = (e) => {
     e.preventDefault()
     if(emailAddress && password){
         setCredentials([emailAddress, password])
+        navigate('/home')
     }
 }
 
-useEffect(() => {
-    setEmailAddress('tom.ce.coney@gmail.com')
-    setPassword('MaddieMax1987')
-}, [])
 
-useEffect(() => {
-    if(emailAddress && password){
-        setCredentials([emailAddress, password])
-    }
-}, [emailAddress, password])
 
   return (
     <div className='login-wrapper'>

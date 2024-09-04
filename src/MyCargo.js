@@ -7,7 +7,6 @@ import {
   AccordionItemPanel,
   AccordionItemState
 } from 'react-accessible-accordion';
-import 'react-accessible-accordion/dist/fancy-example.css';
 import Planets from './Planets';
 
 const MyCargo = ({token}) => {

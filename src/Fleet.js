@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, lazy } from 'react';
 import { Autoplay, EffectFade } from 'swiper/modules';
 import { getData } from './apiCalls';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -11,8 +11,11 @@ import {
   AccordionItemButton,
   AccordionItemPanel,
 } from 'react-accessible-accordion';
-import 'react-accessible-accordion/dist/fancy-example.css';
 import Ships from './Ships';
+import Loading from './Loading';
+import SuspenseWithMinTime from './SuspenseWithMinTime';
+import { useSpring, animated, easings } from 'react-spring';
+const ShipsComp = lazy (() => import('./Ships'))
 
 const Fleet = () => {
   const [userName] = useState('spazmodeus');
@@ -26,6 +29,19 @@ const Fleet = () => {
   const fleetYardsImages = `https://api.fleetyards.net/v1/images/random?limit=15`;
   const hangarPath = `https://api.fleetyards.net/v1/public/hangars/${userName}`;
   const otherHangarPath = `https://api.fleetyards.net/v1/hangar?`
+
+  const fadeIn = useSpring({
+    from: {
+      opacity: 0,
+    },
+    to: {
+      opacity: 1,
+    },
+    config: {
+        duration: 1500,
+        easing: easings.easeInOutCubic,
+      },
+  })
 
   const getImage = async () => {
     try {
@@ -76,7 +92,6 @@ const Fleet = () => {
   const getHangar = async () => {
     try {
       const data = await getData(hangarPath);
-      console.log(data)
       const newArray = await Promise.all(
         data.map(async (ship) => {
           const loanerInfo = await Promise.all(
@@ -170,7 +185,9 @@ const Fleet = () => {
       </Accordion> */}
       <div className='fleet-menu'>
         <div className='fleet-list'>
-          <Ships myHangar={myHangar}/>
+          <SuspenseWithMinTime fallback={<Loading/>} minDisplayTime={4000}>
+            <ShipsComp myHangar={myHangar}></ShipsComp>
+          </SuspenseWithMinTime>
         </div>
       </div>
     </div>

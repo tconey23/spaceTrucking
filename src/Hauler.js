@@ -60,8 +60,6 @@ const Hauler = () => {
 
   const commObjects = () => {
 
-    console.log(allCommPrices.length)
-
     let array = []
 
     allCommPrices.forEach((comm, index) => {
@@ -102,7 +100,6 @@ const Hauler = () => {
   }, [allCommPrices])
 
   useEffect(() =>{
-    console.log(currentSlide, currentSlide % 14 == 0, urlArray.length)
     let exit 
     currentSlide % 14 == 0 ? getImage() : exit = null
   }, [currentSlide])
@@ -110,8 +107,7 @@ const Hauler = () => {
   useEffect(() => {
     if (carouselRef.current) {
       setTimeout(() => {
-        console.log('goto')
-        carouselRef.current.moveTo(1);
+        carouselRef.current && carouselRef.current.moveTo(1);
       }, 500);
     }
   }, [carouselRef])

@@ -1,39 +1,37 @@
 import './App.css';
 import Hauler from './Hauler'; 
 import { Routes, Route, NavLink } from 'react-router-dom';
-import MyCargo from './MyCargo';
-import { useEffect, useState } from 'react';
-import CargoRecord from './CargoRecord';
+import { useEffect, useState, useRef } from 'react';
 import CargoViews from './CargoViews';
 import { getData } from './apiCalls';
-import Data from './Data';
 import Fleet from './Fleet';
-import HoloTest from './HoloTest';
 import { initializeApp } from 'firebase/app';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import "firebase/auth";
+import { getAuth, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import Login from './Login';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 function App() {
+  const [locations, setLocations] = useState();
+  const [systems, setSystems] = useState();
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [credentials, setCredentials] = useState(null);
+  const [token, setToken] = useState();
+  const navigate = useNavigate();
+  const logRef = useRef();
+  const location = useLocation()
 
-  const [locations, setLocations] = useState()
-  const [systems, setSystems] = useState()
-  const [loggedIn, setLoggedIn] = useState(false)
-  const [credentials, setCredentials] = useState(null)
-  const [token, setToken] = useState()
-  const navigate = useNavigate()
-  const systemURL = 'https://uexcorp.space/api/2.0/star_systems'
+  const systemURL = 'https://uexcorp.space/api/2.0/star_systems';
 
   useEffect(() => {
-
     getData(systemURL).then(
       data => {
-        let array = []
-        data && data.data.forEach((sys) => {array.push({name: sys.name, id: sys.id})})
-        setSystems(array)
+        let array = [];
+        data && data.data.forEach((sys) => array.push({ name: sys.name, id: sys.id }));
+        setSystems(array);
       }
-    )
-  }, [])
+    );
+  }, []);
 
   const firebaseConfig = {
     apiKey: "AIzaSyDcB7JThnCpbvnrf8qEgLCFW4UCd2qQStw",
@@ -49,43 +47,69 @@ function App() {
   const auth = getAuth(app);
 
   useEffect(() => {
-
-    if(credentials){
-      console.log(credentials)
+    if (credentials) {
       signInWithEmailAndPassword(auth, credentials[0], credentials[1])
-  .then((userCredential) => {
-    // Signed in 
-    const user = userCredential.user;
-    
-    // Get the ID token
-    user.getIdToken().then((idToken) => {
-      setToken(idToken)
-      // You can now send this ID token in the Authorization header of your requests
-    });
-  })
-  .catch((error) => {
-    console.error('Error signing in:', error);
-  });
+        .then((userCredential) => {
+          const user = userCredential.user;
+          user.getIdToken().then((idToken) => {
+            setToken(idToken);
+          });
+        })
+        .catch((error) => {
+          console.error('Error signing in:', error);
+        });
     }
-
-  }, [credentials])
+  }, [credentials]);
 
   useEffect(() => {
-    token && setLoggedIn(true)
-    !token && !loggedIn && navigate('')
-    console.log(token, loggedIn)
-  }, [token])
+    if (token) {
+      setLoggedIn(true);
+      navigate('/home')
+    } else if (!loggedIn) {
+      navigate('login');
+    }
+    console.log(loggedIn)
+  }, [token, loggedIn]);
+
+  useEffect(() => {
+    console.log(location.pathname)
+  }, [location])
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth); // Use the `signOut` function from Firebase Auth
+      console.log("User signed out successfully");
+      
+      setCredentials(null); // Clear credentials
+      setToken(null); // Clear token
+      setLoggedIn(false); // Set loggedIn to false
+
+      navigate('/login'); // Redirect to login page
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
   
   return (
     <main> 
-      <aside>
-        
-      </aside>
+      <aside></aside>
       <header>
         <div className='link-container'>
-          <NavLink to='spaceTrucking/Home'>Home</NavLink>
-          <NavLink to='spaceTrucking/MyCargo'>My Cargo</NavLink>
-          <NavLink to='spaceTrucking/MyFleet'>My Fleet</NavLink>
+          {!loggedIn && <NavLink ref={logRef} className='login' to='/login'>
+            <i class="fi fi-bs-power"></i>
+          </NavLink>}
+          {loggedIn && <NavLink ref={logRef}  className='logout' to='' onClick={handleLogout}>
+            <i class="fi fi-bs-power"></i>  
+          </NavLink>}
+          {location.pathname !== '/home' && <NavLink className='home' to='/home'>
+            <i class="fi fi-sr-home"></i>
+            </NavLink>}
+          {location.pathname !== '/mycargo' && <NavLink className='cargo' to='/mycargo'>
+            <i class="fi fi-br-forklift"></i>
+          </NavLink>}
+          {location.pathname !== '/myfleet' && <NavLink className='fleet' to='/myfleet'>
+            <i class="fi fi-sr-garage-car"></i>
+          </NavLink>}
         </div>
         <h1 className='site-name'>Space Trucking</h1>
         <div className='header-spacer'>
@@ -94,16 +118,16 @@ function App() {
       </header>
 
       <Routes>
-        {loggedIn && token ? 
-        <>
-        <Route path='' element={<Hauler />}/> 
-        <Route path='spacetrucking/Home' element={<Hauler />}/>
-        <Route path='spacetrucking/MyCargo' element={<CargoViews token={token} systems={systems}/>}/>
-        <Route path='spacetrucking/MyFleet' element={<Fleet token={token}/>}/>
-        </>
-        :
-        <Route path='' element={<Login setCredentials={setCredentials}/>}/>
-      }
+        {loggedIn && token ? (
+          <>
+            <Route path='' element={<Hauler />} />
+            <Route path='/home' element={<Hauler />} />
+            <Route path='/mycargo' element={<CargoViews token={token} systems={systems} />} />
+            <Route path='/myfleet' element={<Fleet token={token} />} />
+          </>
+        ) : (
+          <Route path='login' element={<Login setCredentials={setCredentials} />} />
+        )}
       </Routes>
     </main>
   );

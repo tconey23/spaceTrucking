@@ -7,7 +7,6 @@ import {
   AccordionItemButton,
   AccordionItemPanel,
 } from 'react-accessible-accordion';
-import 'react-accessible-accordion/dist/fancy-example.css';
 import CargoRecord from './CargoRecord';
 
 const Outposts = ({planet, system, orbit, token}) => {
@@ -17,6 +16,7 @@ const Outposts = ({planet, system, orbit, token}) => {
     const [selectedOrbit, setSelectedOrbit] = useState(orbit)
     const [stations, setStations] = useState()
     const [selectedStation, setSelectedStation] = useState()
+    const [keyId, setKeyId] = useState(1)
 
     const path = 'https://uexcorp.space/api/2.0/';
 
@@ -32,7 +32,6 @@ const Outposts = ({planet, system, orbit, token}) => {
     };
 
     const getOutposts = async (orbitId) => {
-        console.log(orbitId)
         const res = await getData(
           `outposts?id_star_system=${selectedSystem.id}&id_moon=${orbitId}`
         );
@@ -52,14 +51,20 @@ const Outposts = ({planet, system, orbit, token}) => {
         planet && setSelectedPlanet(planet)
     }, [])
 
+    const updateKey = async () => {
+      await setKeyId(prev => prev + 2)
+      return
+    }
+
     useEffect(() => {
         selectedPlanet && selectedOrbit && getOutposts(selectedOrbit.id)
+        updateKey()
     }, [selectedPlanet,  selectedOrbit])
 
   return (
     <Accordion allowMultipleExpanded allowZeroExpanded preExpanded={['selectedPlanet', 'selectedSystem']}>
       {stations && !selectedStation && stations.map((station) => (
-        <AccordionItem key={station.id} onClick={() => stationSelected(station)}>
+        <AccordionItem key={station.id} onClick={() => stationSelected(station)} id='outpostItem'>
           <AccordionItemHeading>
             <AccordionItemButton>
               {station.name}
@@ -69,16 +74,16 @@ const Outposts = ({planet, system, orbit, token}) => {
       ))}
       {selectedStation && 
         <>
-            <AccordionItem>
+            <AccordionItem id='outpostItem'>
                 <AccordionItemHeading>
                     <AccordionItemButton>
                         {selectedStation.name}
-                        <i className="fi fi-sr-undo return-button" onClick={() => setSelectedSystem('')}></i>
+                        <i className="fi fi-sr-undo return-button" onClick={() => setSelectedStation('')}></i>
                     </AccordionItemButton>
                 </AccordionItemHeading>
             </AccordionItem>
                 <AccordionItemPanel>
-                    <CargoRecord token={token} planet={planet} system={system} orbit={selectedOrbit} station={selectedStation}/>
+                    <CargoRecord keyId={keyId} setKeyId={setKeyId} token={token} planet={planet} system={system} orbit={selectedOrbit} station={selectedStation}/>
                 </AccordionItemPanel>
         </>
         }

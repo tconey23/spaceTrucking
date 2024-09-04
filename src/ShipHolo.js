@@ -41,8 +41,6 @@ const ShipHolo = ({ shipUrl }) => {
     const [holoUrl, setHoloUrl] = useState(null);
     const controlsRef = useRef();
     const suspenseRef = useRef();
-    const isDev = window.location.hostname === 'localhost';
-    const [devOrProd, setDevOrProd] = useState(isDev ? 'http://localhost:3001/' : 'https://your-production-url.com/');
 
     const prod = 'https://space-trucking-backend-2d499135d3db.herokuapp.com/'
     const dev = 'http://localhost:3001/'
@@ -91,9 +89,9 @@ const ShipHolo = ({ shipUrl }) => {
     };
 
     useEffect(() => {
-        return () => {
-            emptyDownloadsFolder();
-        };
+        // return () => {
+        //     emptyDownloadsFolder();
+        // };
     }, []);
 
     return (

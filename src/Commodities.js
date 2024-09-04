@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
-const Commodities = ({ commodity: initialCommodity, scu: initialScu, inv, commsList, addCommodity }) => {
+const Commodities = ({ commodity: initialCommodity, scu: initialScu, inv, commsList, addCommodity, setKeyId }) => {
   const [editRecord, setEditRecord] = useState(null);
   const [commodity, setCommodity] = useState(initialCommodity); // Local state for commodity
   const [scuValue, setScuValue] = useState(initialScu); // Local state for SCU

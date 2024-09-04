@@ -12,21 +12,14 @@
         padding: 20px;
         display: flex;
         flex-direction: column;
-        justify-content: center;
+        justify-content: flex-start;
         align-items: center;
         overflow-y: scroll;
 
         .fleet-list{
             border: 1px solid orange;
             width: 100%;
-            height: 100%;
-
-                p{
-                    font-size: 15px;
-                    margin-right: 15px;
-                    margin-top: 0px;
-                    margin-bottom: 10px;
-                }
+            height: fit-content;
         }
     }
 }
