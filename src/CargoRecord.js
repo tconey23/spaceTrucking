@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Commodities from './Commodities';
 import commData from '../src/mockCommodityData.json';
+import { GlobalContext } from './GlobalContext';
 
 const CargoRecord = ({ planet, system, orbit, station, token, setKeyId }) => {
   const [storedCargo, setStoredCargo] = useState([]);
@@ -12,10 +13,10 @@ const CargoRecord = ({ planet, system, orbit, station, token, setKeyId }) => {
   const [document] = useState('cargo_records');
   const [toggleGrid, setToggleGrid] = useState(false)
   const [commKey, setCommKey] = useState(4)
-  
+
   const prod = 'https://space-trucking-backend-2d499135d3db.herokuapp.com/';
   const dev = 'http://localhost:3001/';
-  const [devProd] = useState(prod);
+  const { devProd } = useContext(GlobalContext);
   
   const fetchCargoRecords = async () => {
     try {

@@ -31,20 +31,23 @@ a{
 }
 
 .login{
-  margin-right: 33px;
   font-size: 15px;
-  text-wrap: pretty;
+  text-wrap: nowrap;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   &:hover{
-
+    font-size: 15px;
+    text-wrap: nowrap;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
     &::after{
-      content: '\A log in';
-      white-space: pre;
-      text-align: center;
-      margin-top: -24px;
+      content: 'log in';
+      /* margin-left: 75px; */
+      text-wrap: nowrap;
+      color:white
     }
   }
 }
@@ -58,12 +61,15 @@ a{
   align-items: center;
   justify-content: center;
   &:hover{
-
+    font-size: 15px;
+    text-wrap: nowrap;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
     &::after{
-      content: '\A log out';
-      white-space: pre;
-      text-align: center;
-      margin-top: -24px;
+      content: 'log out';
+      text-wrap: nowrap;
+      color:white
     }
   }
 }
@@ -77,12 +83,15 @@ a{
   align-items: center;
   justify-content: center;
   &:hover{
-
+    font-size: 15px;
+    text-wrap: nowrap;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
     &::after{
-      content: '\A home';
-      white-space: pre;
-      text-align: center;
-      margin-top: -24px;
+      content: 'home';
+      text-wrap: nowrap;
+      color:white
     }
   }
 }
@@ -96,12 +105,15 @@ a{
   align-items: center;
   justify-content: center;
   &:hover{
-
+    font-size: 15px;
+    text-wrap: nowrap;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
     &::after{
-      content: '\A my cargo';
-      white-space: pre;
-      text-align: center;
-      margin-top: -24px;
+      content: 'my cargo';
+      text-wrap: nowrap;
+      color:white
     }
   }
 }
@@ -115,15 +127,20 @@ a{
   align-items: center;
   justify-content: center;
   &:hover{
-
+    font-size: 15px;
+    text-wrap: nowrap;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
     &::after{
-      content: '\A my fleet';
-      white-space: pre;
-      text-align: center;
-      margin-top: -24px;
+      content: 'my fleet';
+      text-wrap: nowrap;
+      color:white
     }
   }
 }
+
+
 
 body{
   font-family: "Orbitron", sans-serif;
@@ -312,8 +329,12 @@ header{
 }
 
 .link-container{
-  max-width: 33%;
+  width: 250px;
   display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: flex-start;
+  height: 50vw;
 }
 
 .site-name{

@@ -8,6 +8,10 @@
     align-items: center;
     flex-direction: row;
     border-radius:6px;
+    padding: 40px;
+    .fi{
+        color: green !important;
+    }
     form{
         display: flex;
         flex-direction: column;
