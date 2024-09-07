@@ -27,14 +27,14 @@ useEffect(() => {
 
   return (
     <div className='cargo-views'>
-        <span className='view-select'>
+        {/* <span className='view-select'>
             <Select 
                 styles={customStylesSmall}
                 options={pageOptions}
                 value={selectedView}
                 onChange={(e) => handleSelectView(e)}
             />
-        </span>
+        </span> */}
         {viewType === 'locations' && <MyCargo systems={systems} token={token}/>} 
         {viewType === 'commodities' && <MyCommodities token={token}/>} 
     </div>

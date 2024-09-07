@@ -9,7 +9,14 @@
     flex-direction: row;
     border-radius:6px;
     padding: 40px;
-    .fi{
+    .fi-rr-delete{
+        color: green !important;
+        margin-left: 235px !important;
+        font-size: 20px !important;
+        margin-right: 0px;
+        margin-top: 5px;
+    }
+    .fi-sr-checkbox{
         color: green !important;
     }
     form{
@@ -21,46 +28,77 @@
         label{
             color: black;
 
-            .password-input, .email-input{
-                height: 20px;
-                width: 300px;
-                border: 1px solid black;
-                color: black !important;
-                padding: 5px;
-                padding-left: 10px;
-                margin: 10px;
-                &:hover{
-                    height: 20px !important;
-                    width: 300px !important;
-                    border: 1px solid black !important;
-                    color: black !important;
-                    padding: 5px;
-                    padding-left: 10px;
-                    margin: 10px;
-                }
-            }
-        }
-        button{
-            box-shadow:inset 0px 1px 0px 0px #97c4fe;
-            background:linear-gradient(to bottom, #3d94f6 5%, #1e62d0 100%);
-            background-color:#3d94f6;
-            border-radius:6px;
-            border:1px solid #337fed;
-            display:inline-block;
-            cursor:pointer;
-            color:#ffffff;
-            font-family:Arial;
-            font-size:15px;
-            font-weight:bold;
-            padding:6px 24px;
-            text-decoration:none;
-            text-shadow:0px 1px 0px #1570cd;
-            opacity: 1;
-            &:hover{
-                background:linear-gradient(to bottom, #1e62d0 5%, #3d94f6 100%);
-                background-color:#1e62d0;
-            }
         }
     }
+    
+}
+.password-input, .email-input{
+    height: 20px;
+    width: 300px;
+    border: 1px solid black;
+    color: black !important;
+    padding: 5px;
+    padding-left: 10px;
+    margin: 10px;
+    &:hover{
+        height: 20px !important;
+        width: 300px !important;
+        border: 1px solid black !important;
+        color: black !important;
+        padding: 5px;
+        padding-left: 10px;
+        margin: 10px;
+    }
+}
 
+.fi-rr-caret-down, .fi-rr-caret-up{
+    color: black !important;
+
+    &:hover{
+        color: orange !important;
+    }
+}
+
+.hangar-check{
+    color: black !important;
+    padding: 5px;
+    margin: 10px; 
+    font-size: 25px;
+    text-align: center;
+    &:hover{
+        color: rgb(255, 145, 0) !important;
+        padding: 5px;
+        margin: 10px;  
+        font-size: 25px;
+    }
+    p{
+        font-size: 10px;
+        margin-top: 0px;
+        text-align: center;
+    }
+}
+
+.login-button{
+    box-shadow:inset 0px 1px 0px 0px #97c4fe;
+    background:linear-gradient(to bottom, #3d94f6 5%, #1e62d0 100%);
+    background-color:#3d94f6;
+    border-radius:6px;
+    border:1px solid #337fed;
+    display:inline-block;
+    cursor:pointer;
+    color:#ffffff;
+    font-family:Arial;
+    font-size:15px;
+    font-weight:bold;
+    padding:6px 24px;
+    text-decoration:none;
+    text-shadow:0px 1px 0px #1570cd;
+    opacity: 1;
+    width: 100px;
+    text-wrap: nowrap;
+    margin-left: 3px;
+    &:hover{
+        background:linear-gradient(to bottom, #1e62d0 5%, #3d94f6 100%);
+        background-color:#1e62d0;
+    }
 }

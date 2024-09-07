@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 import { useSpring, animated, easings } from 'react-spring';
 import './SideBar.css';
 
-const SideBar = ({ loggedIn, logRef, location, toggleSideBar }, handleLogout) => {
+const SideBar = ({ loggedIn, logRef, location, toggleSideBar, setToggleSideBar }, handleLogout) => {
 
   const sidebarAnimation = useSpring({
     left: toggleSideBar ? '0vw' : '-120vw',
@@ -16,7 +16,7 @@ const SideBar = ({ loggedIn, logRef, location, toggleSideBar }, handleLogout) =>
   const handleClick = (e) => {
     console.log(e.target.tagName);
     if (e.target.tagName === 'I') {
-      // If the icon is clicked, you can trigger the close animation here
+      setToggleSideBar(false)
       console.log('Icon clicked, sidebar should close.');
     }
   };

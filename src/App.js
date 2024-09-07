@@ -7,7 +7,7 @@ import { getData } from './apiCalls';
 import Fleet from './Fleet';
 import { initializeApp } from 'firebase/app';
 import "firebase/auth";
-import { getAuth, signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword } from 'firebase/auth';
+import { getAuth, signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import Login from './Login';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { GlobalContext } from './GlobalContext';
@@ -70,9 +70,7 @@ function App() {
   useEffect(() => {
     if (token) {
       setLoggedIn(true);
-      navigate('/home');
     } else if (!loggedIn) {
-      navigate('/login');
     }
   }, [token, loggedIn, navigate]);
 
@@ -89,11 +87,19 @@ function App() {
     }
   };
 
-  const createAccount = (email, password) => {
+  const createAccount = (email, password, fltydUser) => {
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user;
         console.log("User created: ", user);
+  
+        // Update the user's profile with the Fleetyards username (fltydUser)
+        return updateProfile(user, {
+          displayName: fltydUser, // Set the Fleetyards username as the display name
+        });
+      })
+      .then(() => {
+        console.log("User profile updated with Fleetyards username.");
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -102,9 +108,6 @@ function App() {
       });
   };
 
-  useEffect(() => {
-    console.log(toggleSideBar)
-      }, [toggleSideBar])
 
   return (
     <main>
@@ -114,7 +117,7 @@ function App() {
         <h1 className="site-name">Space Trucking</h1>
         <div className="header-spacer">EXTERNAL LINKS - WIP</div>
       </header>
-      <SideBar loggedIn={loggedIn} logRef={logRef} location={location} handleLogout={handleLogout} toggleSideBar={toggleSideBar}/>
+      <SideBar setToggleSideBar={setToggleSideBar} loggedIn={loggedIn} logRef={logRef} location={location} handleLogout={handleLogout} toggleSideBar={toggleSideBar}/>
       <Routes>
         {loggedIn && token ? (
           <>

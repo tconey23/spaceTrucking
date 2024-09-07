@@ -12,7 +12,13 @@ const Login = ({setCredentials, create, token}) => {
     const [signUp, setSignUp] = useState(false)
     const emailField = useRef()
     const passwordField = useRef()
+    const delEmail = useRef()
+    const delPass = useRef()
+    const loginMenu = useRef()
     const [deletePos, setDeletePos] = useState()
+    const [windowDims, setWindowDims] = useState()
+    const topCheck = useRef()
+    const botCheck = useRef()
     const navigate = useNavigate()
 
 const updateForm = (type, value) => {
@@ -33,61 +39,86 @@ const submit = (e) => {
 }
 
 useEffect(() => {
-  if(emailField.current && passwordField.current){
+  // if(emailAddress && password && topCheck.current && botCheck.current && emailField.current && passwordField.current && delPass.current && delEmail.current){
 
-    const positions = [
-      {email: 
-        {
-          x: emailField.current.getBoundingClientRect().x + emailField.current.getBoundingClientRect().width - 40,
-          y: emailField.current.getBoundingClientRect().y + emailField.current.getBoundingClientRect().height / 4,
-        }, 
-        password: 
-        {
-          x: passwordField.current.getBoundingClientRect().x + passwordField.current.getBoundingClientRect().width - 40,
-          y: passwordField.current.getBoundingClientRect().y + passwordField.current.getBoundingClientRect().height / 4,
-        }
-      }
-    ]
+  //   const delEmailButton = delEmail.current.getBoundingClientRect()
+  //   const emailInput = emailField.current.getBoundingClientRect()
     
-    setDeletePos(positions)
+  //   const calcEmailHt = emailInput.y + emailInput.height / 5
+  //   const calcEmailWd = emailInput.x + emailInput.width - delEmailButton.width - 20
+   
+  //   delEmail.current.style.fontSize = '20px'
+  //   delEmail.current.style.top = `${calcEmailHt}px`
+  //   delEmail.current.style.left = `${calcEmailWd}px`
 
-  }
-}, [window.innerHeight, window.innerWidth])
+  //   const delPassButton = delPass.current.getBoundingClientRect()
+  //   const passInput = passwordField.current.getBoundingClientRect()
+    
+  //   const calcPassHt = passInput.y + passInput.height / 5
+  //   const calcPassWd = passInput.x + passInput.width - delPassButton.width - 20
+   
+  //   delPass.current.style.fontSize = '20px'
+  //   delPass.current.style.top = `${calcPassHt}px`
+  //   delPass.current.style.left = `${calcPassWd}px`
+    
+  //   topCheck.current.style.transition = 'none'
+  //   topCheck.current.style.position = 'absolute'
+  //   topCheck.current.style.fontSize = '20px'
+  //   topCheck.current.style.top = `${calcEmailHt}px`
+  //   topCheck.current.style.left = `${calcEmailWd + 50}px`
+
+  //   botCheck.current.style.transition = 'none'
+  //   botCheck.current.style.position = 'absolute'
+  //   botCheck.current.style.fontSize = '20px'
+  //   botCheck.current.style.top = `${calcPassHt}px`
+  //   botCheck.current.style.left = `${calcPassWd + 50}px`
+  // }
+}, [windowDims, delEmail, delPass, topCheck, botCheck, emailAddress, password])
 
 useEffect(() => {
-// console.log(deletePos[0].email.x)
-}, [deletePos])
+
+  const handleResize = () => {
+    setWindowDims([window.innerWidth, window.innerHeight]);
+  };
+
+  window.addEventListener('resize', handleResize);
+
+  return () => {
+    window.removeEventListener('resize', handleResize);
+  };
+}, []);
+
 
   return (
     <div className='login-wrapper'>
       {
           !signUp &&
-      <form>
+      <form ref={loginMenu}>
        <label>
         email address
          <span>
-          {deletePos && <i onClick={() => setEmailAddress('')} style={{position: 'absolute', top: deletePos[0].email.y, left: deletePos[0].email.x}} class="fi fi-rr-delete"></i>}
           <input ref={emailField} className='email-input' placeholder='email' type='email' onChange={(e) => updateForm('email', e.target.value)} value={emailAddress}/>
-          {emailAddress && <i className="fi fi-sr-checkbox"></i>}
+         {emailAddress && <i ref={delEmail} onClick={() => setEmailAddress('')} style={{transition: 'none', position: 'absolute'}} class="fi fi-rr-delete"></i>}
+         {emailAddress && <i ref={topCheck} className="fi fi-sr-checkbox"></i>}
         </span>
         </label> 
         <label>
         password
         <span>
-          {deletePos && <i onClick={() => setPassword('')} style={{position: 'absolute', top: deletePos[0].password.y, left: deletePos[0].password.x}} class="fi fi-rr-delete"></i>}
           <input ref={passwordField} className='password-input' placeholder='password' type='password' onChange={(e) => updateForm('password', e.target.value)} value={password}/>
-          {password && <i className="fi fi-sr-checkbox"></i>}
+          {password && <i ref={delPass} onClick={() => setPassword('')} style={{transition: 'none', position: 'absolute'}} class="fi fi-rr-delete"></i>}
+          {password && <i ref={botCheck} className="fi fi-sr-checkbox"></i>}
         </span>
         </label> 
         {emailAddress && password && 
           <span>
-            <button onClick={(e) => submit(e)}>
+            <button className='login-button' onClick={(e) => submit(e)}>
             sign in
             </button>
             {token && <i className="fi fi-sr-checkbox"></i>}
           </span>
         }
-        {!emailAddress && !password && <button onClick={() => setSignUp(true)}>
+        {!emailAddress && !password && <button className='login-button' onClick={() => setSignUp(true)}>
             sign up
         </button>}
       </form>}
