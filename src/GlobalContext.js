@@ -7,7 +7,7 @@ export const GlobalProvider = ({ children }) => {
   const dev = 'http://localhost:3001/';
   
   // Use state to switch between dev and prod environments
-  const [devProd] = useState(dev); // Update this to prod if needed
+  const [devProd] = useState(prod); // Update this to prod if needed
   
   const [globalValue, setGlobalValue] = useState('This is a global value');
 

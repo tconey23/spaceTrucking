@@ -1,11 +1,11 @@
 .sidebar-menu-wrapper{
     width: 25vw;
-    height: 98vh;
+    height: 89vh;
     background: #1f2228;
     position: absolute;
     align-self: baseline;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: flex-start;
     justify-content: flex-start;
     top: 10vh;

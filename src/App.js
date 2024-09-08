@@ -7,7 +7,7 @@ import { getData } from './apiCalls';
 import Fleet from './Fleet';
 import { initializeApp } from 'firebase/app';
 import "firebase/auth";
-import { getAuth, signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { getAuth, signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword, updateProfile, auth } from 'firebase/auth';
 import Login from './Login';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { GlobalContext } from './GlobalContext';
@@ -24,6 +24,7 @@ function App() {
   const navigate = useNavigate();
   const logRef = useRef();
   const location = useLocation();
+  const [displayName, setDisplayName] = useState('')
   const { devProd } = useContext(GlobalContext);
 
   const systemURL = 'https://uexcorp.space/api/2.0/star_systems';
@@ -36,6 +37,9 @@ function App() {
         setSystems(systemsArray);
       }
     });
+    
+
+
   }, []);
 
   const firebaseConfig = {
@@ -70,6 +74,11 @@ function App() {
   useEffect(() => {
     if (token) {
       setLoggedIn(true);
+      const user = auth.currentUser;
+      if (user) {
+        const displayName = user.displayName;
+        setDisplayName(displayName);
+      }
     } else if (!loggedIn) {
     }
   }, [token, loggedIn, navigate]);
@@ -117,7 +126,7 @@ function App() {
         <h1 className="site-name">Space Trucking</h1>
         <div className="header-spacer">EXTERNAL LINKS - WIP</div>
       </header>
-      <SideBar setToggleSideBar={setToggleSideBar} loggedIn={loggedIn} logRef={logRef} location={location} handleLogout={handleLogout} toggleSideBar={toggleSideBar}/>
+      <SideBar displayName={displayName} credentials={credentials} setToggleSideBar={setToggleSideBar} loggedIn={loggedIn} logRef={logRef} location={location} handleLogout={handleLogout} toggleSideBar={toggleSideBar}/>
       <Routes>
         {loggedIn && token ? (
           <>
