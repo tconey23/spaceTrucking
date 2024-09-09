@@ -7,28 +7,28 @@ const AccountSettings = ({loggedIn, credentials, displayName}) => {
       {loggedIn && 
         <>
             <span>
-                <i class="fi fi-br-wifi"></i>
+                <i className="fi fi-br-wifi"></i>
                 {loggedIn && <p>Online</p>}
             </span>
 
             <span>
-                <i class="fi fi-sr-user"></i>
+                <i className="fi fi-sr-user"></i>
                 {credentials && <p>{credentials[0]}</p>}
             </span>
 
 
             <span>
-                <i class="fi fi-sr-lock"></i>
+                <i className="fi fi-sr-lock"></i>
                 <p>password</p>
             </span>
 
             <span>
-                <i class="fi fi-sr-fighter-jet"></i>
+                <i className="fi fi-sr-fighter-jet"></i>
                 {displayName && <p>{displayName}</p>}
             </span>
 
             <span>
-                <i class="fi fi-sr-trash"></i>
+                <i className="fi fi-sr-trash"></i>
                 <p>Delete Account</p>
             </span>
 

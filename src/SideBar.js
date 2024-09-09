@@ -42,10 +42,6 @@ const SideBar = ({ loggedIn, logRef, location, toggleSideBar, setToggleSideBar, 
     }
   };
 
-  useEffect(() => {
-    console.log(credentials)
-  }, [toggleSideBar])
-
   return (
     <animated.div
       ref={sidebarRef}
@@ -83,7 +79,7 @@ const SideBar = ({ loggedIn, logRef, location, toggleSideBar, setToggleSideBar, 
         )}
 
         <a className="acct">
-          <i class="fi fi-rr-user-skill-gear acct"></i>
+          <i className="fi fi-rr-user-skill-gear acct"></i>
         </a>
       </div>
       {toggleAcct && <div className='account_settings'>

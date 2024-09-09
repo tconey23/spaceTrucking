@@ -43,12 +43,10 @@ const Ships = ({ myHangar }) => {
       <Accordion
         onChange={(expandedItems) => {
           if (expandedItems.length > 0) {
-            const expandedUUID = expandedItems[0]; // Get the UUID of the expanded item
+            const expandedUUID = expandedItems[0];
             setHoloPath(expandedUUID);
-            console.log('Expanded Accordion UUID:', expandedUUID); // Log the UUID
           } else {
-            setHoloPath(null); // Reset holoPath when all accordions are collapsed
-            console.log('No Accordion expanded');
+            setHoloPath(null);
           }
         }}
         allowZeroExpanded={true}

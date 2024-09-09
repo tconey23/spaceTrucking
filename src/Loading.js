@@ -1,22 +1,23 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, useGLTF, Html, OrthographicCamera } from '@react-three/drei';
 import { useThree, useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import './Loading.css';
 import { useSpring, animated, easings } from 'react-spring';
+import { GlobalContext } from './GlobalContext';
 
 const Loading = () => {
 
     const [gltfUrl, setGltfUrl] = useState(null);
     const controlsRef = useRef();
     const canvasRef = useRef();
-    const devProd = 'http://localhost:3001/';
     const [windowDims, setWindowDims] = useState()
     const wrapperRef = useRef()
     const newMaterial = new THREE.MeshPhysicalMaterial({
         color: '#00a2ff',
     });
+    const { devProd } = useContext(GlobalContext)
 
     const fadeIn = useSpring({
         from: {

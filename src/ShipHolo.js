@@ -20,23 +20,13 @@ function Model({ url, position, cameraPosition, zoom, color = 'orange', material
         camera.updateProjectionMatrix();
     }, [cameraPosition, zoom, camera]);
 
-    useEffect(() => {
-        // Traverse the scene and apply material properties to meshes
-        scene.traverse((child) => {
-            if (child.isMesh) {
-                child.material.color.set(color);
-                Object.assign(child.material, materialProps);
-                child.material.needsUpdate = true;
-            }
-        });
-    }, [scene, color, materialProps]);
+   
 
     useFrame(() => {
         if (holoRef.current) {
             holoRef.current.rotation.y -= 0.005; // Slow rotation of the model
         }
     });
-
     return <primitive ref={holoRef} object={scene} position={position} />;
 }
 
@@ -44,7 +34,6 @@ const ShipHolo = ({ shipUrl }) => {
     const [holoUrl, setHoloUrl] = useState(null);
     const controlsRef = useRef();
     const { devProd } = useContext(GlobalContext);
-
     const newMaterial = {
         color: '#00a2ff', // Light blue color for the material
     };
@@ -68,22 +57,6 @@ const ShipHolo = ({ shipUrl }) => {
             fetchGltf();
         }
     }, [shipUrl, devProd]);
-
-    const emptyDownloadsFolder = async () => {
-        try {
-            const response = await fetch(`${devProd}empty-downloads`, {
-                method: 'DELETE',
-            });
-
-            if (response.ok) {
-                console.log('Downloads folder emptied successfully.');
-            } else {
-                console.error('Failed to empty downloads folder:', response.statusText);
-            }
-        } catch (error) {
-            console.error('Error emptying downloads folder:', error);
-        }
-    };
 
     useEffect(() => {
         // Uncomment this block if you need to clean up downloads folder on unmount

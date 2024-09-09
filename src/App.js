@@ -72,6 +72,21 @@ function App() {
   }, [credentials, auth]);
 
   useEffect(() => {
+    // Listen for changes in authentication state
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        console.log('User is still logged in:', user);
+        setToken(user.accessToken)
+      } else {
+        console.log('No user logged in');
+      }
+    });
+
+    // Clean up the listener when the component unmounts
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
     if (token) {
       setLoggedIn(true);
       const user = auth.currentUser;

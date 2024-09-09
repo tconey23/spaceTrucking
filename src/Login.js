@@ -64,7 +64,7 @@ useEffect(() => {
         email address
          <span>
           <input ref={emailField} className='email-input' placeholder='email' type='email' onChange={(e) => updateForm('email', e.target.value)} value={emailAddress}/>
-         {emailAddress && <i ref={delEmail} onClick={() => setEmailAddress('')} style={{transition: 'none', position: 'absolute'}} class="fi fi-rr-delete"></i>}
+         {emailAddress && <i ref={delEmail} onClick={() => setEmailAddress('')} style={{transition: 'none', position: 'absolute'}} className="fi fi-rr-delete"></i>}
          {emailAddress && <i ref={topCheck} className="fi fi-sr-checkbox"></i>}
         </span>
         </label> 
@@ -72,7 +72,7 @@ useEffect(() => {
         password
         <span>
           <input ref={passwordField} className='password-input' placeholder='password' type='password' onChange={(e) => updateForm('password', e.target.value)} value={password}/>
-          {password && <i ref={delPass} onClick={() => setPassword('')} style={{transition: 'none', position: 'absolute'}} class="fi fi-rr-delete"></i>}
+          {password && <i ref={delPass} onClick={() => setPassword('')} style={{transition: 'none', position: 'absolute'}} className="fi fi-rr-delete"></i>}
           {password && <i ref={botCheck} className="fi fi-sr-checkbox"></i>}
         </span>
         </label> 

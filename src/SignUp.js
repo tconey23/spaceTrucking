@@ -66,8 +66,8 @@ const SignUp = ({create, setSignUp}) => {
         <form>
           <span>
             <label>Link fleetyards hangar?</label>
-            {toggleFltyds && <i onClick={() => setToggleFltyds(prev => prev === true ? false : true)} class="fi fi-rr-caret-down"></i>}
-            {!toggleFltyds && <i onClick={() => setToggleFltyds(prev => prev === true ? false : true)} class="fi fi-rr-caret-up"></i>}
+            {toggleFltyds && <i onClick={() => setToggleFltyds(prev => prev === true ? false : true)} className="fi fi-rr-caret-down"></i>}
+            {!toggleFltyds && <i onClick={() => setToggleFltyds(prev => prev === true ? false : true)} className="fi fi-rr-caret-up"></i>}
           </span>
           {toggleFltyds && 
           <span>
